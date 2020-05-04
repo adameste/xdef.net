@@ -1,6 +1,3 @@
 [submodule "xdef"]
 	path = xdef
 	url = git@github.com:Syntea/xdef.git
-[submodule "ikvm"]
-	path = ikvm
-	url = git@github.com:ikvm-revived/ikvm.git
