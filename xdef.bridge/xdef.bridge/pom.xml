@@ -7,9 +7,9 @@
     <packaging>jar</packaging>
     <dependencies>
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>org.xdef</groupId>
             <artifactId>xdef</artifactId>
-            <version>32.5.6-SNAPSHOT</version>
+            <version>40.0.0</version>
         </dependency>
     </dependencies>
     <properties>

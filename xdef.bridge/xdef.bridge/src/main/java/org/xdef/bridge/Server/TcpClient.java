@@ -1,30 +1,24 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.xdef.bridge.Server;
 
-import java.io.BufferedReader;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.net.Socket;
-import java.nio.ByteBuffer;
 import java.util.Scanner;
 
-/**
- *
- * @author Gweana
- */
+import org.xdef.bridge.Server.Requests.Request;
+import org.xdef.bridge.Server.Requests.Function;
+
 public class TcpClient extends Client {
 
     private Socket _socket;
     private boolean _shouldListen = true;
+    private ClientRequestProcessor _requestProcessor;
 
     public TcpClient(Socket socket) {
         _socket = socket;
+        _requestProcessor = new ClientRequestProcessor(this);
     }
 
     @Override
@@ -39,12 +33,40 @@ public class TcpClient extends Client {
 
     @Override
     public void listen() throws IOException {
-        InputStream stream = _socket.getInputStream();
-        var scanner = new Scanner(stream);
+        var inputStream = new DataInputStream(_socket.getInputStream());
+        var functions = Function.values();
         while (_shouldListen) {
-            var command = scanner.nextInt();
-            var payload = scanner.nextInt();
-            var bytes = stream.readNBytes(payload);
+            var function = inputStream.readInt();
+            var payload = inputStream.readInt();
+            var bytes = inputStream.readNBytes(payload);
+            if (function > functions.length) {
+                System.err.println("Unknown function number: " + function);
+            }
+            else {
+                var cmd = new Request(functions[function], bytes);
+                _requestProcessor.processCommand(cmd);
+            }
+            
         }
+        inputStream.close();
+    }
+
+    @Override
+    public void sendPacketWithoutResponse(Request request) {
+        try {
+            var stream = _socket.getOutputStream();
+            var dataOutputStream = new DataOutputStream(stream);
+            request.writeToStream(dataOutputStream);
+            dataOutputStream.flush();            
+        } catch (IOException ex) {
+            disconnect(); // Connection lost
+        }
+
+    }
+
+    @Override
+    public Request sendPacketWithResponse(Request request){
+        // TODO Auto-generated method stub
+        return null;
     }
 }
