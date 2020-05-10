@@ -1,25 +1,28 @@
-package org.xdef.bridge.Server;
+package org.xdef.bridge.server;
 
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.HashSet;
+import java.net.SocketException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class TcpListener extends Listener {
 
-    private ServerSocket _serverSocket;
-    private Executor _executor;
-    private boolean _shouldListen = true;
-    private HashSet<Client> _clients = new HashSet<Client>();
-    private ReentrantLock _clientsLock = new ReentrantLock();
+    private ServerSocket serverSocket;
+    private Executor executor;
+    private boolean shouldListen = true;
+    private Map<Integer, Client> clients = new HashMap<Integer, Client>();
+    private ReentrantLock clientsLock = new ReentrantLock();
+    private int currentClientId = 1;
 
     public TcpListener(int port) throws IOException {
-        _serverSocket = new ServerSocket(port, 50, InetAddress.getLocalHost());
-        _executor = Executors.newCachedThreadPool();
+        serverSocket = new ServerSocket(port, 50, InetAddress.getLocalHost());
+        executor = Executors.newCachedThreadPool();
     }
 
     public TcpListener() throws IOException {
@@ -28,11 +31,12 @@ public class TcpListener extends Listener {
 
     @Override
     public void listen() {
-        while (_shouldListen) {
+        while (shouldListen) {
             try {
-                Socket socket = _serverSocket.accept();
-                _executor.execute(() -> {
-                    Client client = new TcpClient(socket);
+                Socket socket = serverSocket.accept();
+                setupSocket(socket);
+                executor.execute(() -> {
+                    Client client = new TcpClient(currentClientId++, socket);
                     AddClient(client);
                     try {
                         client.listen();
@@ -42,7 +46,7 @@ public class TcpListener extends Listener {
 
                 });
             } catch (IOException ex) {
-                if (_shouldListen) {
+                if (shouldListen) {
                     System.err.println("Accept socket error:" + ex.getMessage());
                 } else {
                 } // Do nothing
@@ -50,32 +54,40 @@ public class TcpListener extends Listener {
         }
     }
 
+    private void setupSocket(Socket socket) {
+        try {
+            socket.setSoTimeout(0);
+        } catch (SocketException e) {
+            // Do nothing
+        }
+    }
+
     @Override
     public void close() {
-        _shouldListen = false;
+        shouldListen = false;
         try {
-            if (!_serverSocket.isClosed()) {
-                _serverSocket.close();
+            if (!serverSocket.isClosed()) {
+                serverSocket.close();
             }
-            _clientsLock.lock();
-            for (Client c : _clients) {
+            clientsLock.lock();
+            for (Client c : clients.values()) {
                 c.disconnect();
             }
-            _clientsLock.unlock();
+            clientsLock.unlock();
         } catch (IOException ex) {
         } // Do nothing, already closed/not open
     }
 
     private void AddClient(Client client) {
-        _clientsLock.lock();
-        _clients.add(client);
-        _clientsLock.unlock();
+        clientsLock.lock();
+        clients.put(client.getClientId(), client);
+        clientsLock.unlock();
     }
 
     private void RemoveClient(Client client) {
-        _clientsLock.lock();
-        _clients.remove(client);
-        _clientsLock.unlock();
+        clientsLock.lock();
+        clients.remove(client.getClientId());
+        clientsLock.unlock();
     }
 
 }

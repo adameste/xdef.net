@@ -2,26 +2,28 @@ package org.xdef.bridge;
 
 import java.io.IOException;
 import java.util.Scanner;
-import org.xdef.bridge.Server.*;
+
+import org.xdef.bridge.server.*;
+
 
 public class Main {
 
-    private static Listener _listener;
-    private static Thread _listenerThread;
+    private static Listener listener;
+    private static Thread listenerThread;
 
     public static void main(String[] args) {
         try {
-            _listener = new TcpListener();
+            listener = new TcpListener();
         } catch (IOException ex) {
             System.err.println("Failed to initialize listener: " + ex.getMessage());
         }
 
-        if (_listener != null) {
-            _listenerThread = new Thread(() -> {
-                _listener.listen();
+        if (listener != null) {
+            listenerThread = new Thread(() -> {
+                listener.listen();
             });
 
-            _listenerThread.start();
+            listenerThread.start();
             System.out.println("Listening for connections.");
 
             Scanner scanner = new Scanner(System.in);
@@ -32,7 +34,7 @@ public class Main {
                 switch (line) {
                     case ("exit"):
                         readInput = false;
-                        _listener.close();
+                        listener.close();
                         break;
                     default:
                         break;
@@ -42,9 +44,9 @@ public class Main {
         }
 
         System.out.println("Exiting...");
-        if (_listenerThread.isAlive()) {
+        if (listenerThread.isAlive()) {
             try {
-                _listenerThread.join();
+                listenerThread.join();
             } catch (InterruptedException ex) {
                 // Do nothing, thread exited one way or another
             }

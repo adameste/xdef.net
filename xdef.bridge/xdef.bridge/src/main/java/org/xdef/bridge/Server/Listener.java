@@ -1,4 +1,4 @@
-package org.xdef.bridge.Server;
+package org.xdef.bridge.server;
 
 public abstract class Listener {
     public abstract void listen();
