@@ -15,7 +15,7 @@ namespace xdef.net.Connection
         private int _clientRequestId = 1;
 
         private Dictionary<int, ResponseWaiter> _waitingForResponse = new Dictionary<int, ResponseWaiter>();
-        private Dictionary<int, RemoteObject> _remoteObjects = new Dictionary<int, RemoteObject>();
+        private Dictionary<int, RemoteHandlingObject> _remoteObjects = new Dictionary<int, RemoteHandlingObject>();
 
         protected virtual void Dispose(bool disposing)
         {
@@ -48,7 +48,7 @@ namespace xdef.net.Connection
         public Request SendRequestWithResponse(Request request)
         {
             var waiter = new ResponseWaiter();
-            _waitingForResponse[request.ClientRequestId] = waiter;
+            _waitingForResponse[_clientRequestId] = waiter;
             SendRequestWithoutResponse(request);
             waiter.Semaphore.WaitOne();
             var response = waiter.Response;

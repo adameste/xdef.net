@@ -25,7 +25,7 @@ namespace xdef.net.Connection
 
         public override void Listen()
         {
-            _tcpClient.Connect(IPAddress.Loopback, 42268);
+            _tcpClient.Connect("127.0.0.1", 42268);
             Task.Factory.StartNew(() =>
             {
                 var stream = _tcpClient.GetStream();

@@ -6,15 +6,19 @@ namespace xdef.net.Connection
 {
     public abstract class RemoteObject
     {
-        private Client _client;
+        protected Client _client;
         protected int _objectId;
 
-        public abstract Request HandleRequest(Request request);
-
-        public RemoteObject(Client client)
+        public RemoteObject(int objectId, Client client)
         {
+            _objectId = objectId;
             _client = client;
         }
+        ~RemoteObject()
+        {
+            _client?.SendRequestWithoutResponse(new DeleteObjectRequest(_objectId));
+        }
+
 
         protected void SendRequest(Request request)
         {

@@ -26,6 +26,7 @@ public abstract class Client {
     private ReentrantLock sendLock = new ReentrantLock();
 
     private static final int FUNCTION_CREATE_OBJECT = 1;
+    private static final int FUNCTION_DELETE_OBJECT = 2;
 
     public Client(int clientId) {
         this.clientId = clientId;
@@ -80,13 +81,14 @@ public abstract class Client {
             if (response != null) {
                 response.setClientRequestId(request.getClientRequestId());
                 response.setObjectId(request.getObjectId());
-                sendRequestWithoutResponse(response);    
+                sendRequestWithoutResponse(response);
             }
         });
     }
 
     public int registerRemoteObject(RemoteObject obj) {
-        obj.setObjectId(remoteObjectId++);
+        obj.setObjectId(remoteObjectId);
+        remoteObjectId++;
         remoteObjects.put(obj.getObjectId(), obj);
         return obj.getObjectId();
 
@@ -100,6 +102,13 @@ public abstract class Client {
         switch (request.getFunction()) {
             case FUNCTION_CREATE_OBJECT:
                 return createObject(request);
+            case FUNCTION_DELETE_OBJECT:
+                try {
+                    remoteObjects.remove(request.getReader().readInt());
+                } catch (IOException e) {
+                   
+                }
+                return null;
             default:
                 return null;
         }

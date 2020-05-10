@@ -1,19 +1,22 @@
 package org.xdef.bridge.server.requests;
 
+import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+
+import org.xdef.bridge.utils.BinaryDataReader;
 
 public class Request {
     private int _objectId;
     private int _function;
     private int _clientRequestId;
     private int _serverRequestId;
-    private byte[] _data;
+    private byte[] data;
 
     public Request(final int function, final byte[] data) {
         _function = function;
-        _data = data;
+        this.data = data;
     }
 
     public int getObjectId() {
@@ -41,11 +44,11 @@ public class Request {
     }
 
     public byte[] getData() {
-        return _data;
+        return data;
     }
 
     public void setData(final byte[] _data) {
-        this._data = _data;
+        this.data = _data;
     }
 
     public int getFunction() {
@@ -61,9 +64,9 @@ public class Request {
         stream.writeInt(_function);
         stream.writeInt(_clientRequestId);
         stream.writeInt(_serverRequestId);
-        stream.writeInt(_data == null ? 0 : _data.length);
-        if (_data != null)
-            stream.write(_data);
+        stream.writeInt(data == null ? 0 : data.length);
+        if (data != null)
+            stream.write(data);
     }
 
     public static Request readFromStream(DataInputStream stream) throws IOException {
@@ -78,6 +81,11 @@ public class Request {
         req.setClientRequestId(clientReqId);
         req.setObjectId(objectId);
         return req;
+    }
+
+    public BinaryDataReader getReader() {
+        var reader =  new BinaryDataReader(new ByteArrayInputStream(data));
+        return reader;
     }
 
 }

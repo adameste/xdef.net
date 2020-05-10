@@ -3,7 +3,6 @@ package org.xdef.bridge.utils;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 
 public class BinaryDataBuilder {
     private ByteArrayOutputStream stream;
@@ -14,11 +13,12 @@ public class BinaryDataBuilder {
         dataStream = new DataOutputStream(stream);
     }
 
-    public void add(int x) {
+    public BinaryDataBuilder add(int x) {
         try {
             dataStream.writeInt(x);
         } catch (IOException e) {
         }
+        return this;
     }
 
     public byte[] build() {

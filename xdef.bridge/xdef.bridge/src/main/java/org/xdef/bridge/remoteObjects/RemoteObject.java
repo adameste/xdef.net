@@ -5,7 +5,7 @@ import org.xdef.bridge.server.requests.Request;
 
 public abstract class RemoteObject {
 
-    private Client client;
+    protected Client client;
     private int objectId;
 
     public RemoteObject(Client client) {
@@ -24,11 +24,11 @@ public abstract class RemoteObject {
 
     protected void sendRequest(Request request) {
         request.setObjectId(objectId);
-        client.sendPacketWithoutResponse(request);
+        client.sendRequestWithoutResponse(request);
     }
 
     protected Request sendRequestWithResponse(Request request) {
         request.setObjectId(objectId);
-        return client.sendPacketWithResponse(request);
+        return client.sendRequestWithResponse(request);
     }
 }

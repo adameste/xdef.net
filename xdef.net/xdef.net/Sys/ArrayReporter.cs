@@ -4,7 +4,7 @@ using System.Text;
 
 namespace xdef.net.Sys
 {
-    public abstract class ReportWriter
+    public abstract class ArrayReporter
     {
     }
 }

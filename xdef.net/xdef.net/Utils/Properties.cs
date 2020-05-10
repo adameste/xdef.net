@@ -4,7 +4,8 @@ using System.Text;
 
 namespace xdef.net.Utils
 {
-    public class Properties
+    public class Properties : Dictionary<string, string>
     {
+
     }
 }

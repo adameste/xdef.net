@@ -21,7 +21,7 @@ public class TcpListener extends Listener {
     private int currentClientId = 1;
 
     public TcpListener(int port) throws IOException {
-        serverSocket = new ServerSocket(port, 50, InetAddress.getLocalHost());
+        serverSocket = new ServerSocket(port, 50, InetAddress.getByName("127.0.0.1"));
         executor = Executors.newCachedThreadPool();
     }
 

@@ -1,14 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Text;
 using xdef.net.Connection;
 
 namespace xdef.net
 {
-    public class XDPool : RemoteObject
+    class XDDocument : RemoteObject
     {
-        public XDPool(int objectId, Client client) : base(objectId, client)
+
+        public XDDocument(int objectId, Client client) : base(objectId, client)
         {
         }
+
     }
 }

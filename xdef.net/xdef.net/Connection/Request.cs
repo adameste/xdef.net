@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using xdef.net.Utils;
 
 namespace xdef.net.Connection
 {
@@ -15,7 +16,7 @@ namespace xdef.net.Connection
 
         public void WriteToStream(Stream stream)
         {
-            using (var writer = new BinaryWriter(stream, Encoding.UTF8, true))
+            using (var writer = new BigEndianBinaryWriter(stream, Encoding.UTF8, true))
             {
                 writer.Write(ObjectId);
                 writer.Write(Function);
@@ -28,7 +29,7 @@ namespace xdef.net.Connection
 
         public static Request ReadFromStream(Stream stream)
         {
-            using (var reader = new BinaryReader(stream))
+            using (var reader = new BigEndianBinaryReader(stream, Encoding.UTF8, true))
             {
                 return new Request()
                 {
