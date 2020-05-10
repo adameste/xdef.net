@@ -22,6 +22,7 @@ namespace xdef.net
         {
             StartJavaBridge();
             Client = new TcpClient();
+            Client.Listen();
         }
 
         private static void StartJavaBridge()
@@ -44,6 +45,7 @@ namespace xdef.net
         {
             if (_xdefJavaProcess?.HasExited == false)
                 _xdefJavaProcess.Kill();
+            Client?.Disconnect();
         }
 
         public static XDef Factory => _instance.Value;
@@ -73,7 +75,7 @@ namespace xdef.net
             throw new NotImplementedException();
         }
 
-        public XDPool CompileXD(ReportWriter reportWriter, Properties properties, params object[] sources)
+        public XDPool CompileXD(ArrayReporter reportWriter, Properties properties, params object[] sources)
         {
             throw new NotImplementedException();
         }

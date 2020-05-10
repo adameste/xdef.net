@@ -41,17 +41,17 @@ public abstract class Client {
 
     protected abstract void sendRequestData(Request request);
 
-    public void sendPacketWithoutResponse(Request request) {
+    public void sendRequestWithoutResponse(Request request) {
         sendLock.lock();
         request.setServerRequestId(serverRequestId++);
         sendRequestData(request);
         sendLock.unlock();
     }
 
-    public Request sendPacketWithResponse(Request request) {
+    public Request sendRequestWithResponse(Request request) {
         var waiter = new RequestWaiter(serverRequestId);
         waitingRequests.put(serverRequestId, waiter);
-        sendPacketWithoutResponse(request);
+        sendRequestWithoutResponse(request);
         try {
             waiter.getSemaphore().acquire();
         } catch (InterruptedException e) {
@@ -66,6 +66,7 @@ public abstract class Client {
             if (waitingRequests.containsKey(request.getServerRequestId())) {
                 var waiter = waitingRequests.get(request.getServerRequestId());
                 waiter.setResponse(request);
+                waitingRequests.remove(request.getServerRequestId());
                 waiter.getSemaphore().release();
             } else if (request.getObjectId() == 0) {
                 response = handleObjectlessRequest(request);
@@ -79,7 +80,7 @@ public abstract class Client {
             if (response != null) {
                 response.setClientRequestId(request.getClientRequestId());
                 response.setObjectId(request.getObjectId());
-                sendPacketWithoutResponse(response);
+                sendRequestWithoutResponse(response);    
             }
         });
     }
