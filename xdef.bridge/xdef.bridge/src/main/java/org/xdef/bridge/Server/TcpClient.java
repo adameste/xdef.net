@@ -1,12 +1,13 @@
 package org.xdef.bridge.server;
 
-import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.Socket;
 
 
 import org.xdef.bridge.server.requests.Request;
+import org.xdef.bridge.utils.CustomDataInputStream;
 
 
 public class TcpClient extends Client {
@@ -31,9 +32,9 @@ public class TcpClient extends Client {
 
     @Override
     public void listen() throws IOException {
-        var inputStream = new DataInputStream(socket.getInputStream());
+        CustomDataInputStream inputStream = new CustomDataInputStream(socket.getInputStream());
         while (shouldListen) {
-            var request = Request.readFromStream(inputStream);
+            Request request = Request.readFromStream(inputStream);
             handleRequest(request);
         }
         inputStream.close();
@@ -42,8 +43,8 @@ public class TcpClient extends Client {
     @Override
     protected void sendRequestData(Request request) {
         try {
-            var stream = socket.getOutputStream();
-            var dataOutputStream = new DataOutputStream(stream);
+            OutputStream stream = socket.getOutputStream();
+            DataOutputStream dataOutputStream = new DataOutputStream(stream);
             request.writeToStream(dataOutputStream);
             dataOutputStream.flush();
         } catch (IOException e) {

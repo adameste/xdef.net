@@ -1,5 +1,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using xdef.net.Utils;
 
@@ -18,8 +19,17 @@ namespace xdef.net.test
         [TestMethod]
         public void TestMethod1()
         {
-            var pool = XD.Instance.Factory.CompileXD(null, new FilePath("xdefs/01.xdef"));
+            for (int i = 0; i < 5; i++)
+            {
+                TestCreatePool();
+                GC.Collect(0);
+            }
             return;
+        }
+
+        private void TestCreatePool()
+        {
+            var pool = XD.Instance.Factory.CompileXD(null, new FilePath("xdefs/01.xdef"));
         }
     }
 }

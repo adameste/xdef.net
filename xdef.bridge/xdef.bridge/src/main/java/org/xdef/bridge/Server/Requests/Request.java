@@ -1,11 +1,11 @@
 package org.xdef.bridge.server.requests;
 
 import java.io.ByteArrayInputStream;
-import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
 import org.xdef.bridge.utils.BinaryDataReader;
+import org.xdef.bridge.utils.CustomDataInputStream;
 
 public class Request {
     private int _objectId;
@@ -69,14 +69,14 @@ public class Request {
             stream.write(data);
     }
 
-    public static Request readFromStream(DataInputStream stream) throws IOException {
-        var objectId = stream.readInt();
-        var function = stream.readInt();
-        var clientReqId = stream.readInt();
-        var serverReqId = stream.readInt();
-        var payload = stream.readInt();
-        var data = stream.readNBytes(payload);
-        var req = new Request(function, data);
+    public static Request readFromStream(CustomDataInputStream stream) throws IOException {
+        int objectId = stream.readInt();
+        int function = stream.readInt();
+        int clientReqId = stream.readInt();
+        int serverReqId = stream.readInt();
+        int payload = stream.readInt();
+        byte[] data = stream.readNBytes(payload);
+        Request req = new Request(function, data);
         req.setServerRequestId(serverReqId);
         req.setClientRequestId(clientReqId);
         req.setObjectId(objectId);
@@ -84,7 +84,7 @@ public class Request {
     }
 
     public BinaryDataReader getReader() {
-        var reader =  new BinaryDataReader(new ByteArrayInputStream(data));
+        BinaryDataReader reader =  new BinaryDataReader(new ByteArrayInputStream(data));
         return reader;
     }
 

@@ -50,7 +50,7 @@ public abstract class Client {
     }
 
     public Request sendRequestWithResponse(Request request) {
-        var waiter = new RequestWaiter(serverRequestId);
+        RequestWaiter waiter = new RequestWaiter(serverRequestId);
         waitingRequests.put(serverRequestId, waiter);
         sendRequestWithoutResponse(request);
         try {
@@ -65,14 +65,14 @@ public abstract class Client {
         threadPool.submit(() -> {
             Request response = null;
             if (waitingRequests.containsKey(request.getServerRequestId())) {
-                var waiter = waitingRequests.get(request.getServerRequestId());
+                RequestWaiter waiter = waitingRequests.get(request.getServerRequestId());
                 waiter.setResponse(request);
                 waitingRequests.remove(request.getServerRequestId());
                 waiter.getSemaphore().release();
             } else if (request.getObjectId() == 0) {
                 response = handleObjectlessRequest(request);
             } else {
-                var obj = remoteObjects.get(request.getObjectId());
+                RemoteObject obj = remoteObjects.get(request.getObjectId());
                 if (obj == null)
                     response = sendError();
                 else
@@ -115,12 +115,12 @@ public abstract class Client {
     }
 
     private Request createObject(Request request) {
-        var remoteObjectFactory = new RemoteObjectFactory(this);
-        var obj = remoteObjectFactory.createObject(request);
+        RemoteObjectFactory remoteObjectFactory = new RemoteObjectFactory(this);
+        RemoteObject obj = remoteObjectFactory.createObject(request);
         registerRemoteObject(obj);
-        var builder = new BinaryDataBuilder();
+        BinaryDataBuilder builder = new BinaryDataBuilder();
         builder.add(obj.getObjectId());
-        var response = new Request(FUNCTION_CREATE_OBJECT, builder.build());
+        Request response = new Request(FUNCTION_CREATE_OBJECT, builder.build());
         return response;
     }
 

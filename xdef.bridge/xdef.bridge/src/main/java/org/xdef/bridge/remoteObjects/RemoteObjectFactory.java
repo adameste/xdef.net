@@ -16,7 +16,7 @@ public class RemoteObjectFactory {
     }
 
     public RemoteObject createObject(Request request) {
-        var objectName = new String(request.getData(), StandardCharsets.UTF_8);
+        String objectName = new String(request.getData(), StandardCharsets.UTF_8);
         switch (objectName) {
             case OBJECT_XDFACTORY:
                 return new XDFactoryWrapper(client);

@@ -2,17 +2,18 @@ package org.xdef.bridge.wrappers;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
+import java.util.Map.Entry;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.util.ByteArrayBuilder;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.xdef.XDFactory;
+import org.xdef.XDPool;
 import org.xdef.bridge.remoteObjects.RemoteObject;
 import org.xdef.bridge.server.Client;
 import org.xdef.bridge.server.requests.Request;
@@ -35,14 +36,14 @@ public class XDFactoryWrapper extends RemoteObject {
         }
         if (json == null)
             return null;
-        var mapper = new ObjectMapper();
+            ObjectMapper mapper = new ObjectMapper();
         JsonNode tree;
         try {
             tree = mapper.readTree(json);
-            var props = new Properties();
-            var fields = tree.fields();
+            Properties props = new Properties();
+            Iterator<Entry<String, JsonNode>> fields = tree.fields();
             while (fields.hasNext()) {
-                var elem = fields.next();
+                Entry<String, JsonNode> elem = fields.next();
                 props.setProperty(elem.getKey(), elem.getValue().textValue());
             }
             return props;
@@ -53,7 +54,7 @@ public class XDFactoryWrapper extends RemoteObject {
 
     @Override
     public Request handleRequest(Request request) {
-        var reader = request.getReader();
+        BinaryDataReader reader = request.getReader();
         switch (request.getFunction()) {
             case FUNCTION_COMPILE_XD_1:
                 return compileXD1(reader);
@@ -63,16 +64,16 @@ public class XDFactoryWrapper extends RemoteObject {
     }
 
     private Request compileXD1(BinaryDataReader reader) {
-        var props = readProperties(reader);
+        Properties props = readProperties(reader);
         try {
             List<File> files = new ArrayList<>();
-            var fileCount = reader.readInt();
+            int fileCount = reader.readInt();
             for (int i = 0; i < fileCount; i++) {
-                var path = reader.readSharpString();
+                String path = reader.readSharpString();
                 files.add(new File(path));
             }
-            var pool = XDFactory.compileXD(props, files.toArray(new File[0]));
-            var wrapper = new XDPoolWrapper(client, pool);
+            XDPool pool = XDFactory.compileXD(props, files.toArray(new File[0]));
+            XDPoolWrapper wrapper = new XDPoolWrapper(client, pool);
             client.registerRemoteObject(wrapper);
             return new Request(0, new BinaryDataBuilder().add(wrapper.getObjectId()).build());
         } catch (IOException e) {
