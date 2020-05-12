@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.IO;
 using System.Text;
 using xdef.net.Utils;
@@ -13,6 +14,15 @@ namespace xdef.net.Connection
         public int ClientRequestId { get; set; }
         public int ServerRequestId { get; set; }
         public byte[] Data { get; set; }
+
+        public Request(int function, byte[] data, int objectId = 0)
+        {
+            Function = function;
+            Data = data;
+            ObjectId = objectId;
+        }
+
+        public Request() { }
 
         public void WriteToStream(Stream stream)
         {
@@ -41,5 +51,7 @@ namespace xdef.net.Connection
                 };
             }
         }
+
+        public BigEndianBinaryReader Reader => new BigEndianBinaryReader(new MemoryStream(Data));
     }
 }

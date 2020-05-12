@@ -10,7 +10,9 @@ namespace xdef.net
 {
     public class XDFactory : RemoteObject
     {
-        private const int FUNCTION_COMPILEXD_1 = 1;
+        private const int FUNCTION_COMPILEXD = 1;
+
+        private const int OVERLOAD_COMPILEXD_FILES = 1;
 
         public XDFactory(int objectId, Client client) : base(objectId, client)
         {
@@ -31,14 +33,11 @@ namespace xdef.net
 
         public XDPool CompileXD(Properties props, params FilePath[] sourceFiles)
         {
-            var req = new Request()
-            {
-                ObjectId = _objectId,
-                Function = FUNCTION_COMPILEXD_1
-            };
+            Request req = null;
             var stream = new MemoryStream();
             using (var writer = new BigEndianBinaryWriter(stream, Encoding.UTF8))
             {
+                writer.Write(OVERLOAD_COMPILEXD_FILES);
                 SerializeProperties(props, writer);
                 writer.Write(sourceFiles.Length);
                 foreach (var it in sourceFiles)
@@ -47,7 +46,7 @@ namespace xdef.net
                     writer.Write(it.JavaPath);
                 }
                 writer.Flush();
-                req.Data = stream.ToArray();
+                req = new Request(FUNCTION_COMPILEXD, stream.ToArray(), _objectId);
             }
             var response = SendRequestWithResponse(req);
             return new XDPool(BigEndianBitConverter.ToInt32(response.Data, 0), _client);

@@ -8,39 +8,43 @@ import org.xdef.bridge.utils.BinaryDataReader;
 import org.xdef.bridge.utils.CustomDataInputStream;
 
 public class Request {
-    private int _objectId;
-    private int _function;
-    private int _clientRequestId;
-    private int _serverRequestId;
+    private int objectId;
+    private int function;
+    private int clientRequestId;
+    private int serverRequestId;
     private byte[] data;
 
     public Request(final int function, final byte[] data) {
-        _function = function;
+        this.function = function;
         this.data = data;
+    }
+    public Request(final int function, final byte[] data, final int objectId) {
+        this(function, data);
+        this.objectId = objectId;
     }
 
     public int getObjectId() {
-        return _objectId;
+        return objectId;
     }
 
     public void setObjectId(int objectId) {
-        this._objectId = objectId;
+        this.objectId = objectId;
     }
 
     public int getServerRequestId() {
-        return _serverRequestId;
+        return serverRequestId;
     }
 
     public void setServerRequestId(int serverRequestId) {
-        this._serverRequestId = serverRequestId;
+        this.serverRequestId = serverRequestId;
     }
 
     public int getClientRequestId() {
-        return _clientRequestId;
+        return clientRequestId;
     }
 
     public void setClientRequestId(int clientRequestId) {
-        this._clientRequestId = clientRequestId;
+        this.clientRequestId = clientRequestId;
     }
 
     public byte[] getData() {
@@ -52,18 +56,18 @@ public class Request {
     }
 
     public int getFunction() {
-        return _function;
+        return function;
     }
 
     public void setFunction(final int _function) {
-        this._function = _function;
+        this.function = _function;
     }
 
     public void writeToStream(DataOutputStream stream) throws IOException {
-        stream.writeInt(_objectId);
-        stream.writeInt(_function);
-        stream.writeInt(_clientRequestId);
-        stream.writeInt(_serverRequestId);
+        stream.writeInt(objectId);
+        stream.writeInt(function);
+        stream.writeInt(clientRequestId);
+        stream.writeInt(serverRequestId);
         stream.writeInt(data == null ? 0 : data.length);
         if (data != null)
             stream.write(data);

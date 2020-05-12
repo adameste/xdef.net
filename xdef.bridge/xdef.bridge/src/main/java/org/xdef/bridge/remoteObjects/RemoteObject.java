@@ -8,8 +8,9 @@ public abstract class RemoteObject {
     protected Client client;
     private int objectId;
 
-    public RemoteObject(Client client) {
+    public RemoteObject(Client client, int objectId) {
         this.client = client;
+        this.objectId = objectId;
     }
 
     public int getObjectId() {
@@ -20,8 +21,6 @@ public abstract class RemoteObject {
         this.objectId = objectId;
     }
 
-    public abstract Request handleRequest(Request request);
-
     protected void sendRequest(Request request) {
         request.setObjectId(objectId);
         client.sendRequestWithoutResponse(request);
@@ -31,4 +30,15 @@ public abstract class RemoteObject {
         request.setObjectId(objectId);
         return client.sendRequestWithResponse(request);
     }
+
+    @Override
+    protected void finalize() throws Throwable {
+        deleteRemoteObject();
+        super.finalize();
+    }
+
+    protected void deleteRemoteObject(){
+        client.deleteRemoteObject(this);
+    }
+
 }

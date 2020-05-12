@@ -14,15 +14,18 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.xdef.XDFactory;
 import org.xdef.XDPool;
-import org.xdef.bridge.remoteObjects.RemoteObject;
+import org.xdef.bridge.remoteObjects.RemoteHandlingObject;
 import org.xdef.bridge.server.Client;
 import org.xdef.bridge.server.requests.Request;
+import org.xdef.bridge.server.requests.Response;
 import org.xdef.bridge.utils.BinaryDataBuilder;
 import org.xdef.bridge.utils.BinaryDataReader;
 
-public class XDFactoryWrapper extends RemoteObject {
+public class XDFactoryWrapper extends RemoteHandlingObject {
 
-    private static final int FUNCTION_COMPILE_XD_1 = 1;
+    private static final int FUNCTION_COMPILEXD = 1;
+
+    private static final int OVERLOAD_COMPILEXD_FILES = 1;
 
     public XDFactoryWrapper(Client client) {
         super(client);
@@ -53,32 +56,43 @@ public class XDFactoryWrapper extends RemoteObject {
     }
 
     @Override
-    public Request handleRequest(Request request) {
+    public Response handleRequest(Request request) {
         BinaryDataReader reader = request.getReader();
         switch (request.getFunction()) {
-            case FUNCTION_COMPILE_XD_1:
-                return compileXD1(reader);
+            case FUNCTION_COMPILEXD:
+                return compileXD(request, reader);
             default:
                 return null;
         }
     }
 
-    private Request compileXD1(BinaryDataReader reader) {
-        Properties props = readProperties(reader);
+    private Response compileXD(Request request, BinaryDataReader reader) {
         try {
-            List<File> files = new ArrayList<>();
+            int overload = reader.readInt();
+            Properties props = readProperties(reader);
+            XDPool pool = null;
+            switch(overload) {
+                case OVERLOAD_COMPILEXD_FILES:
+                    pool = compileXDFiles(props, reader);
+                break;
+                default: break;
+            }
+            XDPoolWrapper wrapper = new XDPoolWrapper(client, pool);
+            client.registerRemoteObject(wrapper);
+            return new Response(new BinaryDataBuilder().add(wrapper.getObjectId()).build());
+        } catch (IOException e) {
+            return null;
+        }
+    }
+
+    private XDPool compileXDFiles(Properties props, BinaryDataReader reader) throws IOException{
+        List<File> files = new ArrayList<>();
             int fileCount = reader.readInt();
             for (int i = 0; i < fileCount; i++) {
                 String path = reader.readSharpString();
                 files.add(new File(path));
             }
-            XDPool pool = XDFactory.compileXD(props, files.toArray(new File[0]));
-            XDPoolWrapper wrapper = new XDPoolWrapper(client, pool);
-            client.registerRemoteObject(wrapper);
-            return new Request(0, new BinaryDataBuilder().add(wrapper.getObjectId()).build());
-        } catch (IOException e) {
-            return null;
-        }
+            return XDFactory.compileXD(props, files.toArray(new File[0]));
     }
 
 }

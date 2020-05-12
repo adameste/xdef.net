@@ -8,10 +8,13 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.locks.ReentrantLock;
 
+import org.xdef.bridge.remoteObjects.RemoteHandlingObject;
 import org.xdef.bridge.remoteObjects.RemoteObject;
 import org.xdef.bridge.remoteObjects.RemoteObjectFactory;
 import org.xdef.bridge.server.requests.Request;
 import org.xdef.bridge.server.requests.RequestWaiter;
+import org.xdef.bridge.server.requests.Response;
+import org.xdef.bridge.server.requests.ResponseException;
 import org.xdef.bridge.utils.BinaryDataBuilder;
 
 public abstract class Client {
@@ -20,13 +23,13 @@ public abstract class Client {
     private int serverRequestId = 1;
     private int remoteObjectId = 1;
     private final Map<Integer, RequestWaiter> waitingRequests = new TreeMap<Integer, RequestWaiter>();
-    private final Map<Integer, RemoteObject> remoteObjects = new HashMap<>();
+    private final Map<Integer, RemoteHandlingObject> remoteObjects = new HashMap<>();
 
     private ExecutorService threadPool = Executors.newCachedThreadPool();
     private ReentrantLock sendLock = new ReentrantLock();
 
-    private static final int FUNCTION_CREATE_OBJECT = 1;
-    private static final int FUNCTION_DELETE_OBJECT = 2;
+    public static final int FUNCTION_CREATE_OBJECT = 1;
+    public static final int FUNCTION_DELETE_OBJECT = 2;
 
     public Client(int clientId) {
         this.clientId = clientId;
@@ -63,7 +66,7 @@ public abstract class Client {
 
     protected void handleRequest(Request request) {
         threadPool.submit(() -> {
-            Request response = null;
+            Response response = null;
             if (waitingRequests.containsKey(request.getServerRequestId())) {
                 RequestWaiter waiter = waitingRequests.get(request.getServerRequestId());
                 waiter.setResponse(request);
@@ -72,9 +75,9 @@ public abstract class Client {
             } else if (request.getObjectId() == 0) {
                 response = handleObjectlessRequest(request);
             } else {
-                RemoteObject obj = remoteObjects.get(request.getObjectId());
+                RemoteHandlingObject obj = remoteObjects.get(request.getObjectId());
                 if (obj == null)
-                    response = sendError();
+                    response = new ResponseException(ResponseException.ERROR_CODE_UNKNOWN_OBJECT, "Unknown remote object.");
                 else
                     response = obj.handleRequest(request);
             }
@@ -86,7 +89,7 @@ public abstract class Client {
         });
     }
 
-    public int registerRemoteObject(RemoteObject obj) {
+    public int registerRemoteObject(RemoteHandlingObject obj) {
         obj.setObjectId(remoteObjectId);
         remoteObjectId++;
         remoteObjects.put(obj.getObjectId(), obj);
@@ -94,11 +97,13 @@ public abstract class Client {
 
     }
 
-    private Request sendError() {
-        return null;
+    public void deleteRemoteObject(RemoteObject obj) {
+        byte[] data = new BinaryDataBuilder().add(obj.getObjectId()).build();
+        sendRequestWithoutResponse(new Request(FUNCTION_DELETE_OBJECT, data));
     }
 
-    private Request handleObjectlessRequest(Request request) {
+
+    private Response handleObjectlessRequest(Request request) {
         switch (request.getFunction()) {
             case FUNCTION_CREATE_OBJECT:
                 return createObject(request);
@@ -114,13 +119,13 @@ public abstract class Client {
         }
     }
 
-    private Request createObject(Request request) {
+    private Response createObject(Request request) {
         RemoteObjectFactory remoteObjectFactory = new RemoteObjectFactory(this);
-        RemoteObject obj = remoteObjectFactory.createObject(request);
+        RemoteHandlingObject obj = remoteObjectFactory.createObject(request);
         registerRemoteObject(obj);
         BinaryDataBuilder builder = new BinaryDataBuilder();
         builder.add(obj.getObjectId());
-        Request response = new Request(FUNCTION_CREATE_OBJECT, builder.build());
+        Response response = new Response(builder.build());
         return response;
     }
 
