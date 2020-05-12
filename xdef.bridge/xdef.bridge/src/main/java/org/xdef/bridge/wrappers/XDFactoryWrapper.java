@@ -11,6 +11,9 @@ import java.util.Map.Entry;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.InputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.xdef.XDFactory;
 import org.xdef.XDPool;
@@ -18,14 +21,19 @@ import org.xdef.bridge.remoteObjects.RemoteHandlingObject;
 import org.xdef.bridge.server.Client;
 import org.xdef.bridge.server.requests.Request;
 import org.xdef.bridge.server.requests.Response;
+import org.xdef.bridge.server.requests.ResponseException;
 import org.xdef.bridge.utils.BinaryDataBuilder;
 import org.xdef.bridge.utils.BinaryDataReader;
+import org.xdef.bridge.wrappers.streams.RemoteInputStream;
+import org.xdef.bridge.wrappers.streams.RemoteStreamWrapper;
 
 public class XDFactoryWrapper extends RemoteHandlingObject {
 
     private static final int FUNCTION_COMPILEXD = 1;
 
     private static final int OVERLOAD_COMPILEXD_FILES = 1;
+    private static final int OVERLOAD_COMPILEXD_STREAMS = 2;
+
 
     public XDFactoryWrapper(Client client) {
         super(client);
@@ -74,6 +82,8 @@ public class XDFactoryWrapper extends RemoteHandlingObject {
             switch(overload) {
                 case OVERLOAD_COMPILEXD_FILES:
                     pool = compileXDFiles(props, reader);
+                case OVERLOAD_COMPILEXD_STREAMS:
+                    pool = compileXDStreams(props, reader);
                 break;
                 default: break;
             }
@@ -81,7 +91,7 @@ public class XDFactoryWrapper extends RemoteHandlingObject {
             client.registerRemoteObject(wrapper);
             return new Response(new BinaryDataBuilder().add(wrapper.getObjectId()).build());
         } catch (IOException e) {
-            return null;
+            return new ResponseException(ResponseException.ERROR_CODE_INVALID_REQUEST, "XDFactory: failed to create XDPool");
         }
     }
 
@@ -94,5 +104,16 @@ public class XDFactoryWrapper extends RemoteHandlingObject {
             }
             return XDFactory.compileXD(props, files.toArray(new File[0]));
     }
+    
+    private XDPool compileXDStreams(Properties props, BinaryDataReader reader) throws IOException {
+            List<InputStream> streams = new ArrayList<>();
+            int streamCount = reader.readInt();
+            for (int i = 0; i < streamCount; i++) {
+                int remoteObjectId = reader.readInt();
+                RemoteStreamWrapper wrapper = new RemoteStreamWrapper(client, remoteObjectId);
+                streams.add(new RemoteInputStream(wrapper));
+            }
+            return XDFactory.compileXD(props, streams.toArray(new InputStream[0]));
 
+    }
 }

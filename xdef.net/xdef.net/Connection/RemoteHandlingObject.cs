@@ -6,8 +6,13 @@ namespace xdef.net.Connection
 {
     public abstract class RemoteHandlingObject : RemoteObject
     {
-        public RemoteHandlingObject(int objectId, Client client) : base(objectId, client)
+        public RemoteHandlingObject(Client client) : base(0, client)
         {
+        }
+
+        protected override void DeleteRemoteObject()
+        {
+            // Do nothing
         }
 
         public abstract Request HandleRequest(Request request);

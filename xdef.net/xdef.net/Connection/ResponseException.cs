@@ -22,5 +22,18 @@ namespace xdef.net.Connection
                 Data = stream.ToArray();
             }
         }
+
+        public static bool IsResponseException(Request request)
+        {
+            return request.Function == RESPONSE_FUNCTION_EXCEPTION;
+        }
+
+        public static RemoteCallException GetException(Request request)
+        {
+            using (var reader = request.Reader)
+            {
+                return new RemoteCallException(reader.ReadInt32(), reader.ReadString());
+            }
+        }
     }
 }

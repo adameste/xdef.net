@@ -15,7 +15,7 @@ namespace xdef.net.Connection.Library
 
         private readonly Stream _stream;
 
-        public RemoteStreamWrapper(int objectId, Client client, Stream stream) : base(objectId, client)
+        public RemoteStreamWrapper(Client client, Stream stream) : base(client)
         {
             _stream = stream;
         }

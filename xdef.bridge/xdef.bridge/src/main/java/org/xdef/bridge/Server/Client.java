@@ -1,21 +1,26 @@
 package org.xdef.bridge.server;
 
 import java.io.IOException;
+import java.rmi.RemoteException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.locks.ReentrantLock;
+import jdk.internal.jline.internal.Log;
 
 import org.xdef.bridge.remoteObjects.RemoteHandlingObject;
 import org.xdef.bridge.remoteObjects.RemoteObject;
 import org.xdef.bridge.remoteObjects.RemoteObjectFactory;
+import org.xdef.bridge.server.requests.ObjectlessRequestHandler;
+import org.xdef.bridge.server.requests.RemoteCallException;
 import org.xdef.bridge.server.requests.Request;
 import org.xdef.bridge.server.requests.RequestWaiter;
 import org.xdef.bridge.server.requests.Response;
 import org.xdef.bridge.server.requests.ResponseException;
 import org.xdef.bridge.utils.BinaryDataBuilder;
+import sun.security.util.Debug;
 
 public abstract class Client {
 
@@ -25,14 +30,15 @@ public abstract class Client {
     private final Map<Integer, RequestWaiter> waitingRequests = new TreeMap<Integer, RequestWaiter>();
     private final Map<Integer, RemoteHandlingObject> remoteObjects = new HashMap<>();
 
-    private ExecutorService threadPool = Executors.newCachedThreadPool();
-    private ReentrantLock sendLock = new ReentrantLock();
+    private final ExecutorService threadPool = Executors.newCachedThreadPool();
+    private final ReentrantLock sendLock = new ReentrantLock();
+    private final ObjectlessRequestHandler objectlessRequestHandler;
 
-    public static final int FUNCTION_CREATE_OBJECT = 1;
-    public static final int FUNCTION_DELETE_OBJECT = 2;
+    
 
     public Client(int clientId) {
         this.clientId = clientId;
+        this.objectlessRequestHandler = new ObjectlessRequestHandler(this);
     }
 
     public int getClientId() {
@@ -61,6 +67,10 @@ public abstract class Client {
         } catch (InterruptedException e) {
             // Not expected to fail, do nothing and return null
         }
+        if (ResponseException.isException(request)) {
+            RemoteCallException ex = ResponseException.getException(request);
+            System.err.println("Remote call exception thrown code: " + ex.getErrorCode() + " message: " + ex.getMessage());
+        }
         return waiter.getResponse();
     }
 
@@ -73,7 +83,7 @@ public abstract class Client {
                 waitingRequests.remove(request.getServerRequestId());
                 waiter.getSemaphore().release();
             } else if (request.getObjectId() == 0) {
-                response = handleObjectlessRequest(request);
+                response = objectlessRequestHandler.handleRequest(request);
             } else {
                 RemoteHandlingObject obj = remoteObjects.get(request.getObjectId());
                 if (obj == null)
@@ -94,39 +104,9 @@ public abstract class Client {
         remoteObjectId++;
         remoteObjects.put(obj.getObjectId(), obj);
         return obj.getObjectId();
-
     }
-
-    public void deleteRemoteObject(RemoteObject obj) {
-        byte[] data = new BinaryDataBuilder().add(obj.getObjectId()).build();
-        sendRequestWithoutResponse(new Request(FUNCTION_DELETE_OBJECT, data));
+    
+    public void deleteLocalObject(int objectId) {
+        remoteObjects.remove(objectId);
     }
-
-
-    private Response handleObjectlessRequest(Request request) {
-        switch (request.getFunction()) {
-            case FUNCTION_CREATE_OBJECT:
-                return createObject(request);
-            case FUNCTION_DELETE_OBJECT:
-                try {
-                    remoteObjects.remove(request.getReader().readInt());
-                } catch (IOException e) {
-                   
-                }
-                return null;
-            default:
-                return null;
-        }
-    }
-
-    private Response createObject(Request request) {
-        RemoteObjectFactory remoteObjectFactory = new RemoteObjectFactory(this);
-        RemoteHandlingObject obj = remoteObjectFactory.createObject(request);
-        registerRemoteObject(obj);
-        BinaryDataBuilder builder = new BinaryDataBuilder();
-        builder.add(obj.getObjectId());
-        Response response = new Response(builder.build());
-        return response;
-    }
-
 }

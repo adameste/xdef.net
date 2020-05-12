@@ -7,28 +7,33 @@ namespace xdef.net.Connection
     public abstract class RemoteObject
     {
         protected Client _client;
-        protected int _objectId;
+        internal int ObjectId { get; set; }
 
         public RemoteObject(int objectId, Client client)
         {
-            _objectId = objectId;
+            ObjectId = objectId;
             _client = client;
         }
         ~RemoteObject()
         {
-            _client?.SendRequestWithoutResponse(new DeleteObjectRequest(_objectId));
+            DeleteRemoteObject();
+        }
+
+        protected virtual void DeleteRemoteObject()
+        {
+            _client?.SendRequestWithoutResponse(new DeleteObjectRequest(ObjectId));
         }
 
 
         protected void SendRequest(Request request)
         {
-            request.ObjectId = _objectId;
+            request.ObjectId = ObjectId;
             _client.SendRequestWithoutResponse(request);
         }
 
         protected Request SendRequestWithResponse(Request request)
         {
-            request.ObjectId = _objectId;
+            request.ObjectId = ObjectId;
             return _client.SendRequestWithResponse(request);
         }
     }

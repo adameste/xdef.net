@@ -13,9 +13,17 @@ namespace xdef.net.Connection
         protected abstract void SendRequestData(Request request);
         private object _sendLock = new object();
         private int _clientRequestId = 1;
+        private int _currentObjectId = 1;
+        private ObjectlessRequestHandler _objectlessRequestHandler;
+
 
         private Dictionary<int, ResponseWaiter> _waitingForResponse = new Dictionary<int, ResponseWaiter>();
         private Dictionary<int, RemoteHandlingObject> _remoteObjects = new Dictionary<int, RemoteHandlingObject>();
+
+        public Client()
+        {
+            _objectlessRequestHandler = new ObjectlessRequestHandler(this);
+        }
 
         protected virtual void Dispose(bool disposing)
         {
@@ -38,7 +46,7 @@ namespace xdef.net.Connection
 
         public void SendRequestWithoutResponse(Request request)
         {
-            lock(_sendLock)
+            lock (_sendLock)
             {
                 request.ClientRequestId = _clientRequestId++;
                 SendRequestData(request);
@@ -52,6 +60,10 @@ namespace xdef.net.Connection
             SendRequestWithoutResponse(request);
             waiter.Semaphore.WaitOne();
             var response = waiter.Response;
+            if (ResponseException.IsResponseException(response))
+            {
+                throw ResponseException.GetException(response);
+            }
             waiter.Dispose();
             return response;
         }
@@ -69,7 +81,7 @@ namespace xdef.net.Connection
                 }
                 else if (request.ObjectId == 0)
                 {
-                    response = HandleObjectlessRequest(request);
+                    response = _objectlessRequestHandler.HandleRequest(request);
                 }
                 else
                 {
@@ -87,9 +99,23 @@ namespace xdef.net.Connection
             });
         }
 
-        private Request HandleObjectlessRequest(Request request)
+        internal int RegisterObject(RemoteHandlingObject obj)
         {
-            return null;
+            lock (_remoteObjects)
+            {
+                _remoteObjects.Add(_currentObjectId, obj);
+            }
+            obj.ObjectId = _currentObjectId++;
+            return obj.ObjectId;
         }
+
+        internal void DeleteLocalObject(int objectId)
+        {
+            lock(_remoteObjects)
+            {
+                _remoteObjects.Remove(objectId);
+            }
+        }
+       
     }
 }

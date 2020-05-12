@@ -2,6 +2,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using xdef.net.Utils;
 
 namespace xdef.net.test
@@ -29,7 +30,11 @@ namespace xdef.net.test
 
         private void TestCreatePool()
         {
-            var pool = XD.Instance.Factory.CompileXD(null, new FilePath("xdefs/01.xdef"));
+            var filePath = "xdefs/01.xdef";
+            using (var stream = new FileStream(filePath, FileMode.Open))
+            {
+                var pool = XD.Instance.Factory.CompileXD(null, stream);
+            }
         }
     }
 }
