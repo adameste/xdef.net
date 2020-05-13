@@ -8,7 +8,7 @@ namespace xdef.net.Connection
     class ResponseWaiter : IDisposable
     {
         public int RequestId { get; set; }
-        public Semaphore Semaphore { get; } = new Semaphore(0, 1);
+        public SemaphoreSlim Semaphore { get; } = new SemaphoreSlim(0, 1);
         public Request Response { get; set; }
 
         public void Dispose()

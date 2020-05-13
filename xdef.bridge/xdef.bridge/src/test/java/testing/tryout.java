@@ -8,16 +8,13 @@ import org.junit.Test;
 import org.xdef.XDBuilder;
 import org.xdef.XDFactory;
 import org.xdef.XDPool;
-import org.xdef.msg.JSON;
 
 public class tryout {
 
     @Test
     public void testXdef() throws Exception {
-        File file = new File("src/test/java/xdefs/01.xdef");
-        Properties props = new Properties();
-        XDPool pool = XDFactory.compileXD(props, file);
-        XDBuilder builder = XDFactory.getXDBuilder(null);
+        File file = new File("D:\\Source\\xdef.net\\xdef.net\\xdef.net.test\\xdefs\\01.xdef");
+        XDPool pool = XDFactory.compileXD(null, file);
         return;
     }
 }

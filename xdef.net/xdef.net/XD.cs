@@ -15,6 +15,7 @@ namespace xdef.net
         private static Lazy<XD> _instance = new Lazy<XD>(() => new XD());
         private Process _xdefJavaProcess { get; set; }
         private Lazy<XDFactory> _xdFactory;
+        private string _tmpFile;
 
         public static bool StartProcess { get; set; } = false;
 
@@ -44,13 +45,15 @@ namespace xdef.net
         {
             if (!StartProcess) return;
 
+            _tmpFile = Path.GetTempFileName();
+            File.WriteAllBytes(_tmpFile, Properties.Resources.xdef_bridge);
             _xdefJavaProcess = Process.Start(new ProcessStartInfo()
             {
                 UseShellExecute = false,
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
                 FileName = "java",
-                Arguments = "-jar JavaBin/xdef.bridge.jar"
+                Arguments = $"-jar \"{_tmpFile}\""
             });
             var line = _xdefJavaProcess.StandardOutput.ReadLine(); // Listening
             Debug.WriteLine($"Java process started: {line}");
@@ -59,7 +62,14 @@ namespace xdef.net
         ~XD()
         {
             if (_xdefJavaProcess?.HasExited == false)
+            {
                 _xdefJavaProcess.Kill();
+            }
+            try
+            {
+                File.Delete(_tmpFile);
+            }
+            catch (Exception) { } // Do nothing
             Client?.Disconnect();
         }
 

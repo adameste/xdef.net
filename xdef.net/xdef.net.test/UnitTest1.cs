@@ -1,10 +1,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
-using xdef.net.Utils;
 
 namespace xdef.net.test
 {
@@ -21,13 +17,13 @@ namespace xdef.net.test
         [TestMethod]
         public void TestMethod1()
         {
-            Parallel.For(1, 8, (i) =>
-             {
-                 for (int x = 0; x < 500; x++)
-                 {
-                     TestCreatePool();
-                 }
-             });
+            Parallel.For(1, 100, (i) =>
+            {
+                for (int x = 0; x < 1000; x++)
+                {
+                    TestCreatePool();
+                }
+            });
             return;
         }
 

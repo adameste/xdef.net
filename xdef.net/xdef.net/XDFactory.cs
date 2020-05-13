@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -24,7 +23,7 @@ namespace xdef.net
         }
 
 
-        public XDPool CompileXD(Properties props, params FilePath[] sourceFiles)
+        public XDPool CompileXD(xdef.net.Utils.Properties props, params FilePath[] sourceFiles)
         {
             Request req = null;
             var stream = new MemoryStream();
@@ -45,7 +44,7 @@ namespace xdef.net
             return new XDPool(BigEndianBitConverter.ToInt32(response.Data, 0), _client);
         }
 
-        public XDPool CompileXD(Properties props, params Stream[] sourceStreams)
+        public XDPool CompileXD(xdef.net.Utils.Properties props, params Stream[] sourceStreams)
         {
             if (sourceStreams.Any(p => !p.CanRead))
                 throw new ArgumentException("All streams must be readable.");
@@ -69,7 +68,7 @@ namespace xdef.net
             return new XDPool(BigEndianBitConverter.ToInt32(response.Data, 0), _client);
         }
 
-        public XDPool CompileXD(Properties props, params string[] sources)
+        public XDPool CompileXD(xdef.net.Utils.Properties props, params string[] sources)
         {
             Request req = null;
             var stream = new MemoryStream();
@@ -89,7 +88,7 @@ namespace xdef.net
             return new XDPool(BigEndianBitConverter.ToInt32(response.Data, 0), _client);
         }
 
-        public XDPool CompileXD(Properties props, params Uri[] sources)
+        public XDPool CompileXD(xdef.net.Utils.Properties props, params Uri[] sources)
         {
             Request req = null;
             var stream = new MemoryStream();

@@ -5,6 +5,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Transactions;
 
 namespace xdef.net.Connection
 {
@@ -45,14 +46,15 @@ namespace xdef.net.Connection
                 }
             });
             thread.Priority = ThreadPriority.AboveNormal;
+            thread.IsBackground = true;
             thread.Start();
         }
 
         protected override void SendRequestData(Request request)
         {
+            var stream = _tcpClient.GetStream();
             lock (_sendLock)
             {
-                var stream = _tcpClient.GetStream();
                 request.WriteToStream(stream);
                 stream.Flush();
             }

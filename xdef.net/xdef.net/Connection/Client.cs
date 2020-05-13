@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading;
@@ -13,14 +14,13 @@ namespace xdef.net.Connection
         public abstract void Disconnect();
         protected abstract void SendRequestData(Request request);
 
-        private int _clientRequestId = 1;
-        public object _clientReqIdLock = new object();
-        private int _currentObjectId = 1;
+        private int _clientRequestId = 0;
+        private int _currentObjectId = 0;
         private ObjectlessRequestHandler _objectlessRequestHandler;
 
 
-        private Dictionary<int, ResponseWaiter> _waitingForResponse = new Dictionary<int, ResponseWaiter>();
-        private Dictionary<int, RemoteHandlingObject> _remoteObjects = new Dictionary<int, RemoteHandlingObject>();
+        private ConcurrentDictionary<int, ResponseWaiter> _waitingForResponse = new ConcurrentDictionary<int, ResponseWaiter>();
+        private ConcurrentDictionary<int, RemoteHandlingObject> _remoteObjects = new ConcurrentDictionary<int, RemoteHandlingObject>();
         public Client()
         {
             _objectlessRequestHandler = new ObjectlessRequestHandler(this);
@@ -52,20 +52,14 @@ namespace xdef.net.Connection
 
         public Request SendRequestWithResponse(Request request)
         {
-            lock (_clientReqIdLock)
-            {
-                request.ClientRequestId = _clientRequestId++;
-            }
+            request.ClientRequestId = Interlocked.Increment(ref _clientRequestId);
             var waiter = new ResponseWaiter()
             {
                 RequestId = request.ClientRequestId
             };
-            lock (_waitingForResponse)
-            {
-                _waitingForResponse[request.ClientRequestId] = waiter;
-            }
+            _waitingForResponse[request.ClientRequestId] = waiter;
             SendRequestData(request);
-            waiter.Semaphore.WaitOne();
+            waiter.Semaphore.Wait();
             var response = waiter.Response;
             if (ResponseException.IsResponseException(response))
             {
@@ -80,10 +74,7 @@ namespace xdef.net.Connection
             if (_waitingForResponse.TryGetValue(request.ClientRequestId, out var waiter))
             {
                 waiter.Response = request;
-                lock (_waitingForResponse)
-                {
-                    _waitingForResponse.Remove(waiter.RequestId);
-                }
+                _waitingForResponse.TryRemove(waiter.RequestId, out _);
                 waiter.Semaphore.Release();
             }
             else
@@ -117,22 +108,15 @@ namespace xdef.net.Connection
 
         internal int RegisterObject(RemoteHandlingObject obj)
         {
-            lock (_remoteObjects)
-            {
-                _remoteObjects.Add(_currentObjectId, obj);
-                obj.ObjectId = _currentObjectId;
-                _currentObjectId++;
-            }
+            obj.ObjectId = Interlocked.Increment(ref _currentObjectId);
+            _remoteObjects[obj.ObjectId] = obj;
 
             return obj.ObjectId;
         }
 
         internal void DeleteLocalObject(int objectId)
         {
-            lock (_remoteObjects)
-            {
-                _remoteObjects.Remove(objectId);
-            }
+                _remoteObjects.TryRemove(objectId, out _);
         }
 
     }
