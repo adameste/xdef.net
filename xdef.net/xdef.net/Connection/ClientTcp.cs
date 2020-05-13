@@ -28,7 +28,7 @@ namespace xdef.net.Connection
         public override void Listen()
         {
             _tcpClient.Connect("127.0.0.1", 42268);
-            new Task(() =>
+            var thread = new Thread(() =>
             {
                 var stream = _tcpClient.GetStream();
                 while (_shouldListen)
@@ -43,7 +43,9 @@ namespace xdef.net.Connection
                         // Disconnected, ignore this exception
                     }
                 }
-            }).Start();
+            });
+            thread.Priority = ThreadPriority.AboveNormal;
+            thread.Start();
         }
 
         protected override void SendRequestData(Request request)

@@ -21,9 +21,9 @@ namespace xdef.net.test
         [TestMethod]
         public void TestMethod1()
         {
-            Parallel.For(1, 100, (i) =>
+            Parallel.For(1, 8, (i) =>
              {
-                 for (int x = 0; x < 100; x++)
+                 for (int x = 0; x < 500; x++)
                  {
                      TestCreatePool();
                  }

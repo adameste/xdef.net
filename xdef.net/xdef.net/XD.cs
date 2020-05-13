@@ -48,10 +48,10 @@ namespace xdef.net
             {
                 UseShellExecute = false,
                 RedirectStandardOutput = true,
+                RedirectStandardError = true,
                 FileName = "java",
-                Arguments = "-jar xdef.bridge.jar"
+                Arguments = "-jar JavaBin/xdef.bridge.jar"
             });
-            _xdefJavaProcess.BeginOutputReadLine();
             var line = _xdefJavaProcess.StandardOutput.ReadLine(); // Listening
             Debug.WriteLine($"Java process started: {line}");
         }
