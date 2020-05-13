@@ -6,7 +6,7 @@ using xdef.net.Utils;
 
 namespace xdef.net.Connection.Library
 {
-    class RemoteStreamWrapper : RemoteHandlingObject, IDisposable
+    class RemoteStreamWrapper : RemoteHandlingObject
     {
         private const int FUNCTION_AVAILABLE = 1;
         private const int FUNCTION_CLOSE = 2;
@@ -67,7 +67,7 @@ namespace xdef.net.Connection.Library
 
         private Request Close()
         {
-            _stream.Close();
+            //_stream.Close();
             return null;
         }
 
@@ -77,9 +77,5 @@ namespace xdef.net.Connection.Library
             return new Response(BigEndianBitConverter.GetBytes(avail));
         }
 
-        public void Dispose()
-        {
-            _stream?.Dispose();
-        }
     }
 }

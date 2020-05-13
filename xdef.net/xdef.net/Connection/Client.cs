@@ -12,15 +12,15 @@ namespace xdef.net.Connection
         public abstract void Listen();
         public abstract void Disconnect();
         protected abstract void SendRequestData(Request request);
-        private object _sendLock = new object();
+
         private int _clientRequestId = 1;
+        public object _clientReqIdLock = new object();
         private int _currentObjectId = 1;
         private ObjectlessRequestHandler _objectlessRequestHandler;
 
 
         private Dictionary<int, ResponseWaiter> _waitingForResponse = new Dictionary<int, ResponseWaiter>();
         private Dictionary<int, RemoteHandlingObject> _remoteObjects = new Dictionary<int, RemoteHandlingObject>();
-
         public Client()
         {
             _objectlessRequestHandler = new ObjectlessRequestHandler(this);
@@ -47,29 +47,24 @@ namespace xdef.net.Connection
 
         public void SendRequestWithoutResponse(Request request)
         {
-            lock (_sendLock)
-            {
-                request.ClientRequestId = _clientRequestId++;
-                SendRequestData(request);
-            }
+            SendRequestData(request);
         }
 
         public Request SendRequestWithResponse(Request request)
         {
-            var waiter = new ResponseWaiter();
-            lock (_sendLock)
+            lock (_clientReqIdLock)
             {
                 request.ClientRequestId = _clientRequestId++;
             }
-            waiter.RequestId = request.ClientRequestId;
+            var waiter = new ResponseWaiter()
+            {
+                RequestId = request.ClientRequestId
+            };
             lock (_waitingForResponse)
             {
                 _waitingForResponse[request.ClientRequestId] = waiter;
             }
-            lock (_sendLock)
-            {
-                SendRequestData(request);
-            }
+            SendRequestData(request);
             waiter.Semaphore.WaitOne();
             var response = waiter.Response;
             if (ResponseException.IsResponseException(response))
@@ -125,8 +120,10 @@ namespace xdef.net.Connection
             lock (_remoteObjects)
             {
                 _remoteObjects.Add(_currentObjectId, obj);
+                obj.ObjectId = _currentObjectId;
+                _currentObjectId++;
             }
-            obj.ObjectId = _currentObjectId++;
+
             return obj.ObjectId;
         }
 

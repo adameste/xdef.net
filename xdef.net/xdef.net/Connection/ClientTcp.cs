@@ -12,6 +12,7 @@ namespace xdef.net.Connection
     {
         private TcpClient _tcpClient;
         private bool _shouldListen = true;
+        private object _sendLock = new object();
 
         public ClientTcp()
         {
@@ -36,7 +37,8 @@ namespace xdef.net.Connection
                     {
                         var request = Request.ReadFromStream(stream);
                         HandleRequest(request);
-                    } catch (Exception)
+                    }
+                    catch (Exception)
                     {
                         // Disconnected, ignore this exception
                     }
@@ -46,9 +48,12 @@ namespace xdef.net.Connection
 
         protected override void SendRequestData(Request request)
         {
-            var stream = _tcpClient.GetStream();
-            request.WriteToStream(stream);
-            stream.Flush();
+            lock (_sendLock)
+            {
+                var stream = _tcpClient.GetStream();
+                request.WriteToStream(stream);
+                stream.Flush();
+            }
         }
 
         protected override void Dispose(bool disposing)

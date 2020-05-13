@@ -41,7 +41,7 @@ public class TcpClient extends Client {
     }
 
     @Override
-    protected void sendRequestData(Request request) {
+    protected synchronized void sendRequestData(Request request) {
         try {
             OutputStream stream = socket.getOutputStream();
             DataOutputStream dataOutputStream = new DataOutputStream(stream);

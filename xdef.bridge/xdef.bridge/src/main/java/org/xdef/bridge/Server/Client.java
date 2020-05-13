@@ -16,7 +16,6 @@ import org.xdef.bridge.server.requests.RequestWaiter;
 import org.xdef.bridge.server.requests.Response;
 import org.xdef.bridge.server.requests.ResponseException;
 
-
 public abstract class Client {
 
     private int clientId;
@@ -28,8 +27,6 @@ public abstract class Client {
     private final ExecutorService threadPool = Executors.newCachedThreadPool();
 
     private final ObjectlessRequestHandler objectlessRequestHandler;
-
-    
 
     public Client(int clientId) {
         this.clientId = clientId;
@@ -46,24 +43,28 @@ public abstract class Client {
         super.finalize();
     }
 
-    
-    
     public abstract void disconnect();
 
     public abstract void listen() throws IOException;
 
     protected abstract void sendRequestData(Request request);
 
-    public synchronized void sendRequestWithoutResponse(Request request) {
-        request.setServerRequestId(serverRequestId++);
+    private synchronized int getNextRequestId() {
+        int id = serverRequestId;
+        serverRequestId++;
+        return id;
+    }
+
+    public void sendRequestWithoutResponse(Request request) {
         sendRequestData(request);
     }
 
     public Request sendRequestWithResponse(Request request) {
-        RequestWaiter waiter = new RequestWaiter(serverRequestId);
+        int id = getNextRequestId();
+        request.setServerRequestId(id);
+        RequestWaiter waiter = new RequestWaiter(id);
         addWaitingRequest(waiter);
-        
-        sendRequestWithoutResponse(request);
+        sendRequestData(request);
         try {
             waiter.getSemaphore().acquire();
         } catch (InterruptedException e) {
@@ -77,28 +78,31 @@ public abstract class Client {
     }
 
     protected void handleRequest(Request request) {
-        threadPool.submit(() -> {
-            Response response = null;
-            if (waitingRequests.containsKey(request.getServerRequestId())) {
-                RequestWaiter waiter = waitingRequests.get(request.getServerRequestId());
-                waiter.setResponse(request);
-                removeWaitingRequest(waiter);
-                waiter.getSemaphore().release();
-            } else if (request.getObjectId() == 0) {
-                response = objectlessRequestHandler.handleRequest(request);
-            } else {
-                RemoteHandlingObject obj = remoteObjects.get(request.getObjectId());
-                if (obj == null)
-                    response = new ResponseException(ResponseException.ERROR_CODE_UNKNOWN_OBJECT, "Unknown remote object.");
-                else
-                    response = obj.handleRequest(request);
-            }
-            if (response != null) {
-                response.setClientRequestId(request.getClientRequestId());
-                response.setObjectId(request.getObjectId());
-                sendRequestWithoutResponse(response);
-            }
-        });
+        if (waitingRequests.containsKey(request.getServerRequestId())) {
+            RequestWaiter waiter = waitingRequests.get(request.getServerRequestId());
+            waiter.setResponse(request);
+            removeWaitingRequest(waiter);
+            waiter.getSemaphore().release();
+        } else {
+            threadPool.submit(() -> {
+                Response response = null;
+                if (request.getObjectId() == 0) {
+                    response = objectlessRequestHandler.handleRequest(request);
+                } else {
+                    RemoteHandlingObject obj = remoteObjects.get(request.getObjectId());
+                    if (obj == null) {
+                        response = new ResponseException(ResponseException.ERROR_CODE_UNKNOWN_OBJECT, "Unknown remote object.");
+                    } else {
+                        response = obj.handleRequest(request);
+                    }
+                }
+                if (response != null) {
+                    response.setClientRequestId(request.getClientRequestId());
+                    response.setObjectId(request.getObjectId());
+                    sendRequestWithoutResponse(response);
+                }
+            });
+        }
     }
 
     public synchronized int registerRemoteObject(RemoteHandlingObject obj) {
@@ -107,7 +111,7 @@ public abstract class Client {
         remoteObjects.put(obj.getObjectId(), obj);
         return obj.getObjectId();
     }
-    
+
     public synchronized void deleteLocalObject(int objectId) {
         remoteObjects.remove(objectId);
     }

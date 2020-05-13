@@ -34,7 +34,10 @@ namespace xdef.net.test
         private void TestCreatePool()
         {
             var filePath = "xdefs/01.xdef";
-            var pool = XD.Instance.Factory.CompileXD(null, File.ReadAllText(filePath));
+            using (var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read))
+            {
+                var pool = XD.Instance.Factory.CompileXD(null, stream);
+            }
             return;
         }
     }
