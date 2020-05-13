@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Xml.Schema;
 
 namespace xdef.net.Connection
 {
@@ -56,8 +57,19 @@ namespace xdef.net.Connection
         public Request SendRequestWithResponse(Request request)
         {
             var waiter = new ResponseWaiter();
-            _waitingForResponse[_clientRequestId] = waiter;
-            SendRequestWithoutResponse(request);
+            lock (_sendLock)
+            {
+                request.ClientRequestId = _clientRequestId++;
+            }
+            waiter.RequestId = request.ClientRequestId;
+            lock (_waitingForResponse)
+            {
+                _waitingForResponse[request.ClientRequestId] = waiter;
+            }
+            lock (_sendLock)
+            {
+                SendRequestData(request);
+            }
             waiter.Semaphore.WaitOne();
             var response = waiter.Response;
             if (ResponseException.IsResponseException(response))
@@ -70,33 +82,42 @@ namespace xdef.net.Connection
 
         protected void HandleRequest(Request request)
         {
-            Task.Factory.StartNew(() =>
+            if (_waitingForResponse.TryGetValue(request.ClientRequestId, out var waiter))
             {
-                Request response = null;
-                if (_waitingForResponse.TryGetValue(request.ClientRequestId, out var waiter))
+                waiter.Response = request;
+                lock (_waitingForResponse)
                 {
-                    waiter.Response = request;
                     _waitingForResponse.Remove(waiter.RequestId);
-                    waiter.Semaphore.Release();
                 }
-                else if (request.ObjectId == 0)
+                waiter.Semaphore.Release();
+            }
+            else
+            {
+                Task.Factory.StartNew(() =>
                 {
-                    response = _objectlessRequestHandler.HandleRequest(request);
-                }
-                else
-                {
-                    if (_remoteObjects.TryGetValue(request.ObjectId, out var obj))
+                    Request response = null;
+
+
+                    if (request.ObjectId == 0)
                     {
-                        response = obj.HandleRequest(request);
+                        response = _objectlessRequestHandler.HandleRequest(request);
                     }
-                }
-                if (response != null)
-                {
-                    response.ServerRequestId = request.ServerRequestId;
-                    response.ObjectId = request.ObjectId;
-                    SendRequestWithoutResponse(response);
-                }
-            });
+                    else
+                    {
+                        if (_remoteObjects.TryGetValue(request.ObjectId, out var obj))
+                        {
+                            response = obj.HandleRequest(request);
+                        }
+                    }
+                    if (response != null)
+                    {
+                        response.ServerRequestId = request.ServerRequestId;
+                        response.ObjectId = request.ObjectId;
+                        SendRequestWithoutResponse(response);
+                    }
+                });
+            }
+
         }
 
         internal int RegisterObject(RemoteHandlingObject obj)
@@ -111,11 +132,11 @@ namespace xdef.net.Connection
 
         internal void DeleteLocalObject(int objectId)
         {
-            lock(_remoteObjects)
+            lock (_remoteObjects)
             {
                 _remoteObjects.Remove(objectId);
             }
         }
-       
+
     }
 }

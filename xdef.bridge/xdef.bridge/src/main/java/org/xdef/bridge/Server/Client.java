@@ -1,26 +1,21 @@
 package org.xdef.bridge.server;
 
 import java.io.IOException;
-import java.rmi.RemoteException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.locks.ReentrantLock;
-import jdk.internal.jline.internal.Log;
 
 import org.xdef.bridge.remoteObjects.RemoteHandlingObject;
-import org.xdef.bridge.remoteObjects.RemoteObject;
-import org.xdef.bridge.remoteObjects.RemoteObjectFactory;
 import org.xdef.bridge.server.requests.ObjectlessRequestHandler;
 import org.xdef.bridge.server.requests.RemoteCallException;
 import org.xdef.bridge.server.requests.Request;
 import org.xdef.bridge.server.requests.RequestWaiter;
 import org.xdef.bridge.server.requests.Response;
 import org.xdef.bridge.server.requests.ResponseException;
-import org.xdef.bridge.utils.BinaryDataBuilder;
-import sun.security.util.Debug;
+
 
 public abstract class Client {
 
@@ -31,7 +26,7 @@ public abstract class Client {
     private final Map<Integer, RemoteHandlingObject> remoteObjects = new HashMap<>();
 
     private final ExecutorService threadPool = Executors.newCachedThreadPool();
-    private final ReentrantLock sendLock = new ReentrantLock();
+
     private final ObjectlessRequestHandler objectlessRequestHandler;
 
     
@@ -45,22 +40,29 @@ public abstract class Client {
         return clientId;
     }
 
+    @Override
+    protected void finalize() throws Throwable {
+        threadPool.shutdown();
+        super.finalize();
+    }
+
+    
+    
     public abstract void disconnect();
 
     public abstract void listen() throws IOException;
 
     protected abstract void sendRequestData(Request request);
 
-    public void sendRequestWithoutResponse(Request request) {
-        sendLock.lock();
+    public synchronized void sendRequestWithoutResponse(Request request) {
         request.setServerRequestId(serverRequestId++);
         sendRequestData(request);
-        sendLock.unlock();
     }
 
     public Request sendRequestWithResponse(Request request) {
         RequestWaiter waiter = new RequestWaiter(serverRequestId);
-        waitingRequests.put(serverRequestId, waiter);
+        addWaitingRequest(waiter);
+        
         sendRequestWithoutResponse(request);
         try {
             waiter.getSemaphore().acquire();
@@ -80,7 +82,7 @@ public abstract class Client {
             if (waitingRequests.containsKey(request.getServerRequestId())) {
                 RequestWaiter waiter = waitingRequests.get(request.getServerRequestId());
                 waiter.setResponse(request);
-                waitingRequests.remove(request.getServerRequestId());
+                removeWaitingRequest(waiter);
                 waiter.getSemaphore().release();
             } else if (request.getObjectId() == 0) {
                 response = objectlessRequestHandler.handleRequest(request);
@@ -99,14 +101,22 @@ public abstract class Client {
         });
     }
 
-    public int registerRemoteObject(RemoteHandlingObject obj) {
+    public synchronized int registerRemoteObject(RemoteHandlingObject obj) {
         obj.setObjectId(remoteObjectId);
         remoteObjectId++;
         remoteObjects.put(obj.getObjectId(), obj);
         return obj.getObjectId();
     }
     
-    public void deleteLocalObject(int objectId) {
+    public synchronized void deleteLocalObject(int objectId) {
         remoteObjects.remove(objectId);
+    }
+
+    private synchronized void addWaitingRequest(RequestWaiter waiter) {
+        waitingRequests.put(waiter.getRequestId(), waiter);
+    }
+
+    private synchronized void removeWaitingRequest(RequestWaiter waiter) {
+        waitingRequests.remove(waiter.getRequestId());
     }
 }

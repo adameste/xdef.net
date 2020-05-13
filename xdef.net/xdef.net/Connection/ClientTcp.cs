@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace xdef.net.Connection
@@ -26,7 +27,7 @@ namespace xdef.net.Connection
         public override void Listen()
         {
             _tcpClient.Connect("127.0.0.1", 42268);
-            Task.Factory.StartNew(() =>
+            new Task(() =>
             {
                 var stream = _tcpClient.GetStream();
                 while (_shouldListen)
@@ -40,7 +41,7 @@ namespace xdef.net.Connection
                         // Disconnected, ignore this exception
                     }
                 }
-            });
+            }).Start();
         }
 
         protected override void SendRequestData(Request request)

@@ -5,7 +5,6 @@ import java.io.IOException;
 import org.xdef.bridge.remoteObjects.RemoteObject;
 import org.xdef.bridge.server.Client;
 import org.xdef.bridge.server.requests.Request;
-import org.xdef.bridge.server.requests.Response;
 import org.xdef.bridge.utils.BinaryDataBuilder;
 import org.xdef.bridge.utils.BinaryDataReader;
 

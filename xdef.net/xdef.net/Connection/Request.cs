@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.Common;
 using System.IO;
 using System.Text;
+using System.Threading.Tasks;
 using xdef.net.Utils;
 
 namespace xdef.net.Connection
@@ -52,6 +53,6 @@ namespace xdef.net.Connection
             }
         }
 
-        public BigEndianBinaryReader Reader => new BigEndianBinaryReader(new MemoryStream(Data));
+        public BigEndianBinaryReader Reader => new BigEndianBinaryReader(new MemoryStream(Data), Encoding.UTF8);
     }
 }

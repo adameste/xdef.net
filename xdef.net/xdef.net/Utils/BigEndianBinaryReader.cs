@@ -10,7 +10,7 @@ namespace xdef.net.Utils
     {
         private readonly Encoding _encoding;
 
-        public BigEndianBinaryReader(Stream input) : base(input)
+        public BigEndianBinaryReader(Stream input) : base(input, Encoding.UTF8)
         {
         }
 

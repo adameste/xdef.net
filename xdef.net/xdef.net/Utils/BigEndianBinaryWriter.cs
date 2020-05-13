@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-
+using xdef.net.Connection;
 
 namespace xdef.net.Utils
 {
@@ -66,6 +66,11 @@ namespace xdef.net.Utils
             var bytes = _encoding.GetBytes(value);
             Write(bytes.Length);
             Write(bytes);
+        }
+        public void Write(IBinaryWriterSerializable value)
+        {
+            if (value == null) Write(0);
+            else value.Serialize(this);
         }
     }
 }

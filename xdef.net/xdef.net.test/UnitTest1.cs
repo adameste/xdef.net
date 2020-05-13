@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 using xdef.net.Utils;
 
 namespace xdef.net.test
@@ -20,21 +21,21 @@ namespace xdef.net.test
         [TestMethod]
         public void TestMethod1()
         {
-            for (int i = 0; i < 5; i++)
-            {
-                TestCreatePool();
-                GC.Collect(0);
-            }
+            Parallel.For(1, 100, (i) =>
+             {
+                 for (int x = 0; x < 100; x++)
+                 {
+                     TestCreatePool();
+                 }
+             });
             return;
         }
 
         private void TestCreatePool()
         {
             var filePath = "xdefs/01.xdef";
-            using (var stream = new FileStream(filePath, FileMode.Open))
-            {
-                var pool = XD.Instance.Factory.CompileXD(null, stream);
-            }
+            var pool = XD.Instance.Factory.CompileXD(null, File.ReadAllText(filePath));
+            return;
         }
     }
 }
