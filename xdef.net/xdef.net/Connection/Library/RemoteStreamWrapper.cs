@@ -67,7 +67,7 @@ namespace xdef.net.Connection.Library
 
         private Request Close()
         {
-            //_stream.Close();
+            _stream.Close();
             return null;
         }
 

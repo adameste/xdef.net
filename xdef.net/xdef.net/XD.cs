@@ -10,7 +10,7 @@ using xdef.net.Utils;
 
 namespace xdef.net
 {
-    public class XD
+    public sealed class XD
     {
         private static Lazy<XD> _instance = new Lazy<XD>(() => new XD());
         private Process _xdefJavaProcess { get; set; }
@@ -18,6 +18,8 @@ namespace xdef.net
         private string _tmpFile;
 
         public static bool StartProcess { get; set; } = false;
+        public static int Port { get; set; } = 42268;
+        public static string JavaExePath { get; set; }
 
         public Client Client { get; private set; }
 
@@ -25,7 +27,7 @@ namespace xdef.net
         private XD()
         {
             StartJavaBridge();
-            Client = new ClientTcp();
+            Client = new ClientTcp(Port);
             Client.Listen();
             CreateFactoryInitializer();
         }
@@ -52,8 +54,8 @@ namespace xdef.net
                 UseShellExecute = false,
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
-                FileName = "java",
-                Arguments = $"-jar \"{_tmpFile}\""
+                FileName = JavaExePath ?? "java",
+                Arguments = $"-jar \"{_tmpFile}\" {Port}"
             });
             var line = _xdefJavaProcess.StandardOutput.ReadLine(); // Listening
             Debug.WriteLine($"Java process started: {line}");
@@ -73,8 +75,8 @@ namespace xdef.net
             Client?.Disconnect();
         }
 
-        public static XD Instance => _instance.Value;
-        public XDFactory Factory => _xdFactory.Value;
+        internal static XD Instance => _instance.Value;
+        public static XDFactory Factory => Instance._xdFactory.Value;
 
     }
 }

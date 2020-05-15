@@ -14,10 +14,12 @@ namespace xdef.net.Connection
         private TcpClient _tcpClient;
         private bool _shouldListen = true;
         private object _sendLock = new object();
+        private readonly int _port;
 
-        public ClientTcp()
+        public ClientTcp(int port)
         {
             _tcpClient = new TcpClient();
+            _port = port;
         }
 
         public override void Disconnect()
@@ -28,7 +30,7 @@ namespace xdef.net.Connection
 
         public override void Listen()
         {
-            _tcpClient.Connect("127.0.0.1", 42268);
+            _tcpClient.Connect("127.0.0.1", _port);
             var thread = new Thread(() =>
             {
                 var stream = _tcpClient.GetStream();

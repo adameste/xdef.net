@@ -6,7 +6,7 @@ using xdef.net.Connection;
 
 namespace xdef.net
 {
-    class XDDocument : RemoteObject
+    public sealed class XDDocument : RemoteObject
     {
 
         public XDDocument(int objectId, Client client) : base(objectId, client)

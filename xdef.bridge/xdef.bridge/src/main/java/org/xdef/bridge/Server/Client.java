@@ -123,4 +123,8 @@ public abstract class Client {
     private synchronized void removeWaitingRequest(RequestWaiter waiter) {
         waitingRequests.remove(waiter.getRequestId());
     }
+    
+    public RemoteHandlingObject getLocalObject(int objectId) {
+        return remoteObjects.get(objectId);
+    }
 }

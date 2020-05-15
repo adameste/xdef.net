@@ -42,6 +42,15 @@ public class BinaryDataBuilder {
         }
         return this;
     }
+    
+     public BinaryDataBuilder add(boolean x) {
+        try {
+            dataStream.writeBoolean(x);
+        } catch (IOException ex) {
+            // Do nothing
+        }
+        return this;
+    }
 
     public byte[] build() {
         try {

@@ -47,6 +47,11 @@ namespace xdef.net.Utils
         {
             return BitConverter.GetBytes(value).Reverse().ToArray();
         }
+        public static byte[] GetBytes(string value)
+        {
+            var data = Encoding.UTF8.GetBytes(value);
+            return GetBytes(data.Length).Concat(data).ToArray();
+        }
 
         public static bool ToBoolean(byte[] value, int startIndex)
         {

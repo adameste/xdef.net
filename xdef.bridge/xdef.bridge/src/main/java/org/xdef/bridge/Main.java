@@ -13,7 +13,15 @@ public class Main {
 
     public static void main(String[] args) {
         try {
-            listener = new TcpListener();
+            if (args.length > 0)
+            {
+                int port = Integer.parseInt(args[0]);
+                listener = new TcpListener(port);
+            }
+            else
+            {
+                listener = new TcpListener();
+            }
         } catch (IOException ex) {
             System.err.println("Failed to initialize listener: " + ex.getMessage());
         }
@@ -22,6 +30,7 @@ public class Main {
             listenerThread = new Thread(() -> {
                 listener.listen();
             });
+            listenerThread.setPriority(7);
 
             listenerThread.start();
             System.out.println("Listening for connections.");

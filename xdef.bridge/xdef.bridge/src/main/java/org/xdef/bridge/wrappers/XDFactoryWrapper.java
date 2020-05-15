@@ -6,7 +6,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.io.InputStream;
+import java.io.PrintStream;
 import java.net.URL;
+import javax.imageio.IIOException;
 import org.xdef.XDFactory;
 import org.xdef.XDPool;
 import org.xdef.bridge.remoteObjects.RemoteHandlingObject;
@@ -18,6 +20,9 @@ import org.xdef.bridge.utils.BinaryDataBuilder;
 import org.xdef.bridge.utils.BinaryDataReader;
 import org.xdef.bridge.wrappers.streams.RemoteInputStream;
 import org.xdef.bridge.wrappers.streams.RemoteStreamWrapper;
+import org.xdef.sys.ArrayReporter;
+import org.xdef.sys.ReportReader;
+import org.xdef.sys.ReportWriter;
 
 public class XDFactoryWrapper extends RemoteHandlingObject {
 
@@ -27,6 +32,8 @@ public class XDFactoryWrapper extends RemoteHandlingObject {
     private static final int OVERLOAD_COMPILEXD_STREAMS = 2;
     private static final int OVERLOAD_COMPILEXD_STRINGS = 3;
     private static final int OVERLOAD_COMPILEXD_URLS = 4;
+    private static final int OVERLOAD_COMPILEXD_OBJECTS = 5;
+    private static final int OVERLOAD_COMPILEXD_OBJECTS_IDS = 6;
 
     public XDFactoryWrapper(Client client) {
         super(client);
@@ -76,9 +83,17 @@ public class XDFactoryWrapper extends RemoteHandlingObject {
                 case OVERLOAD_COMPILEXD_URLS:
                     pool = compileXDUrls(props, reader);
                     break;
-                default:
+                case OVERLOAD_COMPILEXD_OBJECTS:
+                    pool = compileXDObject(props, reader);
                     break;
+                case OVERLOAD_COMPILEXD_OBJECTS_IDS:
+                    pool = compileXDObjectIds(props, reader);
+                    break;
+                default:
+                    throw new Exception("Unknown funciton overload.");
             }
+            
+            if (pool == null) throw new Exception("CompileXD returned null");
             XDPoolWrapper wrapper = new XDPoolWrapper(client, pool);
             client.registerRemoteObject(wrapper);
             return new Response(new BinaryDataBuilder().add(wrapper.getObjectId()).build());
@@ -126,6 +141,54 @@ public class XDFactoryWrapper extends RemoteHandlingObject {
             urls[i] = new URL(reader.readSharpString());
         }
         return XDFactory.compileXD(props, urls);
+    }
+    
+    private XDPool compileXDObject(Properties props, BinaryDataReader reader) throws IOException {
+        Object[] args = readObjectArgs(reader);
+        return XDFactory.compileXD(props, args);
+    }
+    
+    private XDPool compileXDObjectReporter(Properties props, BinaryDataReader reader) throws IOException {
+        int readerId = reader.readInt();
+        Object[] args = readObjectArgs(reader);
+        ReportWriter reportWriter = (ReportWriter) client.getLocalObject(readerId);
+        return XDFactory.compileXD(reportWriter, props, args);
+        
+    }
+    
+    private XDPool compileXDObjectIds(Properties props, BinaryDataReader reader) throws IOException {
+        Object[] args = readObjectArgs(reader);
+        int sourceIdCount = reader.readInt();
+        String[] sourceIds = new String[sourceIdCount];
+        for (int i = 0; i < sourceIdCount; i++) {
+            sourceIds[i] = reader.readSharpString();
+        }
+        return XDFactory.compileXD(props, args, sourceIds);
+    }
+
+    private Object[] readObjectArgs(BinaryDataReader reader) throws IOException {
+        int paramCount = reader.readInt();
+        Object[] res = new Object[paramCount];
+        for(int i = 0; i < paramCount; i++) {
+            int objectType = reader.readInt();
+            switch (objectType) {
+                case OVERLOAD_COMPILEXD_FILES:
+                    res[i] = new File(reader.readSharpString());
+                    break;
+                case OVERLOAD_COMPILEXD_STREAMS:
+                    res[i] = new RemoteInputStream(new RemoteStreamWrapper(client, reader.readInt()));
+                    break;
+                case OVERLOAD_COMPILEXD_STRINGS:
+                    res[i] = reader.readSharpString();
+                    break;
+                case OVERLOAD_COMPILEXD_URLS:
+                    res[i] = new URL(reader.readSharpString());
+                    break;
+                default:
+                    throw new IIOException("Invalid parameter type.");
+            }
+        }
+        return res;
     }
     
     
