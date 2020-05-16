@@ -11,8 +11,9 @@ namespace xdef.net.Utils
     {
         private readonly Encoding _encoding;
 
-        public BigEndianBinaryWriter(Stream output) : base(output)
+        public BigEndianBinaryWriter(Stream output) : base(output, Encoding.UTF8)
         {
+            _encoding = Encoding.UTF8;
         }
 
         public BigEndianBinaryWriter(Stream output, Encoding encoding) : base(output, encoding)
@@ -63,9 +64,13 @@ namespace xdef.net.Utils
         }
         public override void Write(string value)
         {
-            var bytes = _encoding.GetBytes(value);
-            Write(bytes.Length);
-            Write(bytes);
+            if (value == null) Write(0);
+            else
+            {
+                var bytes = _encoding.GetBytes(value);
+                Write(bytes.Length);
+                Write(bytes);
+            }
         }
         public void Write(IBinaryWriterSerializable value)
         {

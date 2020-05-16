@@ -16,94 +16,92 @@ namespace xdef.net.Sys
             
         }
 
+        public Report Report => ((ReportReader)_reportReaderWrapper).Report;
 
-        Report ReportReader.Report => _reportReaderWrapper.Report;
+        public string Language { set => _reportWriterWrapper.Language = value; }
 
-        string ReportWriter.Language { set => _reportWriterWrapper.Language = value; }
+        public Report LastErrorReport => _reportWriterWrapper.LastErrorReport;
 
-        Report ReportWriter.LastErrorReport => _reportWriterWrapper.LastErrorReport;
+        public int Size => _reportWriterWrapper.Size;
 
-        int ReportWriter.Size => _reportWriterWrapper.Size;
+        public bool Fatals => _reportWriterWrapper.Fatals;
 
-        bool ReportWriter.Fatals => _reportWriterWrapper.Fatals;
+        public bool Errors => _reportWriterWrapper.Errors;
 
-        bool ReportWriter.Errors => _reportWriterWrapper.Errors;
+        public bool ErrorWarnings => _reportWriterWrapper.ErrorWarnings;
 
-        bool ReportWriter.ErrorWarnings => _reportWriterWrapper.ErrorWarnings;
+        public int FatalErrorCount => _reportWriterWrapper.FatalErrorCount;
 
-        int ReportWriter.FatalErrorCount => _reportWriterWrapper.FatalErrorCount;
+        public int ErrorCount => _reportWriterWrapper.ErrorCount;
 
-        int ReportWriter.ErrorCount => _reportWriterWrapper.ErrorCount;
+        public int LightErrorCount => _reportWriterWrapper.LightErrorCount;
 
-        int ReportWriter.LightErrorCount => _reportWriterWrapper.LightErrorCount;
+        public int WarningCount => _reportWriterWrapper.WarningCount;
 
-        int ReportWriter.WarningCount => _reportWriterWrapper.WarningCount;
+        public ReportReader ReportReader => this;
 
-        ReportReader ReportWriter.ReportReader => this;
+        int ReportReader.ObjectId => ((ReportReader)_reportReaderWrapper).ObjectId;
 
-        void ReportWriter.AddReports(ReportReader reporter)
+        int ReportWriter.ObjectId => _reportWriterWrapper.ObjectId;
+
+        public void AddReports(ReportReader reporter)
         {
             _reportWriterWrapper.AddReports(reporter);
         }
 
-        void ReportWriter.CheckAndThrowErrors()
+        public void CheckAndThrowErrors()
         {
             _reportWriterWrapper.CheckAndThrowErrors();
         }
 
-        void ReportWriter.CheckAndThrowErrorWarnings()
+        public void CheckAndThrowErrorWarnings()
         {
             _reportWriterWrapper.CheckAndThrowErrorWarnings();
         }
 
-        void ReportWriter.Clear()
+        public void Clear()
         {
             _reportWriterWrapper.Clear();
         }
 
-        void ReportWriter.ClearCounters()
+        public void ClearCounters()
         {
             _reportWriterWrapper.ClearCounters();
         }
 
-        void ReportWriter.ClearLastErrorReport()
+        public void ClearLastErrorReport()
         {
             _reportWriterWrapper.ClearLastErrorReport();
         }
 
-        void ReportReader.Close()
+        public void Close()
         {
-            _reportReaderWrapper.Close();
+            ((ReportReader)_reportReaderWrapper).Close();
         }
 
-        void ReportWriter.Close()
+        public void PrintReports(Stream output)
         {
-            _reportWriterWrapper.Close();
+            ((ReportReader)_reportReaderWrapper).PrintReports(output);
         }
 
-        void ReportReader.PrintReports(Stream output)
+        public void PrintReports(Stream output, string language)
         {
-            _reportReaderWrapper.PrintReports(output);
+            ((ReportReader)_reportReaderWrapper).PrintReports(output, language);
         }
 
-        void ReportReader.PrintReports(Stream output, string language)
+        public string PrintToString()
         {
-            _reportReaderWrapper.PrintReports(output, language);
+            return ((ReportReader)_reportReaderWrapper).PrintToString();
         }
 
-        string ReportReader.PrintToString()
+        public string PrintToString(string language)
         {
-            return _reportReaderWrapper.PrintToString();
+            return ((ReportReader)_reportReaderWrapper).PrintToString(language);
         }
 
-        string ReportReader.PrintToString(string language)
+        public void WriteReports(ReportWriter reporter)
         {
-            return _reportReaderWrapper.PrintToString(language);
-        }
-
-        void ReportReader.WriteReports(ReportWriter reporter)
-        {
-            _reportReaderWrapper.WriteReports(reporter);
+            ((ReportReader)_reportReaderWrapper).WriteReports(reporter);
         }
     }
 }

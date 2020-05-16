@@ -21,6 +21,12 @@
     <None Update="xdefs\01.xdef">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="xdefs\02.xdef">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="xdefs\02.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

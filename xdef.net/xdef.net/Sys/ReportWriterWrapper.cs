@@ -37,7 +37,7 @@ namespace xdef.net.Sys
             _objectId = objectId;
         }
 
-        public string Language { set => _client.SendRequestWithResponse(new Request(FUNCTION_WRITER_LANGUAGE, BigEndianBitConverter.GetBytes(value), _objectId); }
+        public string Language { set => _client.SendRequestWithResponse(new Request(FUNCTION_WRITER_LANGUAGE, BigEndianBitConverter.GetBytes(value), _objectId)); }
 
         public Report LastErrorReport
         {
@@ -123,6 +123,8 @@ namespace xdef.net.Sys
         }
 
         public ReportReader ReportReader => throw new NotImplementedException();
+
+        public int ObjectId => _objectId;
 
         public void AddReports(ReportReader reporter)
         {

@@ -1,0 +1,6 @@
+﻿<Family>  
+    <Father   Firstname   = "John"  Familyname = "Smith" BirthDate = "1971-07-13" />  
+    <Mother   Firstname   = "Jane"  Familyname = "Smith" BirthDate = "1972-09-18" />  
+    <Son      Firstname   = "Peter" Familyname = "Smith" BirthDate = "1997-01-18" />  
+    <Daughter Firstname   = "Mary"  Familyname = "Smith" BirthDate = "1998-12-11" />  
+</Family>  

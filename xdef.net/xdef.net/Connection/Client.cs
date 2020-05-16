@@ -108,7 +108,9 @@ namespace xdef.net.Connection
 
         internal int RegisterObject(RemoteHandlingObject obj)
         {
-            obj.ObjectId = Interlocked.Increment(ref _currentObjectId);
+            var objId = Interlocked.Increment(ref _currentObjectId);
+            while (_remoteObjects.ContainsKey(objId) || objId == 0) // Prevent overflow of object ids with 0
+                objId = Interlocked.Increment(ref _currentObjectId);
             _remoteObjects[obj.ObjectId] = obj;
 
             return obj.ObjectId;

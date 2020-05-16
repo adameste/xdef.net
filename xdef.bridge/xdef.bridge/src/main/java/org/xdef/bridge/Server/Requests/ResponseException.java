@@ -13,6 +13,8 @@ public class ResponseException extends Response {
     public static final int ERROR_CODE_UNKNOWN_OBJECT = 1;
     public static final int ERROR_CODE_UNKNOWN_FUNCTION= 2;
     public static final int ERROR_CODE_INVALID_REQUEST = 3;
+    public static final int ERROR_CODE_S_RUNTIME_EXCEPTION = 4;
+
 
 
 

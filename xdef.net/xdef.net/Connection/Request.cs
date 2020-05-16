@@ -35,7 +35,8 @@ namespace xdef.net.Connection
                 writer.Write(ClientRequestId);
                 writer.Write(ServerRequestId);
                 writer.Write(Data == null ? 0 : Data.Length);
-                writer.Write(Data);
+                if (Data != null)
+                    writer.Write(Data);
             }
         }
 
@@ -55,5 +56,6 @@ namespace xdef.net.Connection
         }
 
         public BigEndianBinaryReader Reader => new BigEndianBinaryReader(new MemoryStream(Data), Encoding.UTF8);
+        public int ResultObjectId => BigEndianBitConverter.ToInt32(Data, 0);
     }
 }

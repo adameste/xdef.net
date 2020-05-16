@@ -20,7 +20,7 @@ public abstract class Client {
 
     private int clientId;
     private int serverRequestId = 1;
-    private int remoteObjectId = 1;
+    private int remoteObjectId = 0;
     private final Map<Integer, RequestWaiter> waitingRequests = new TreeMap<Integer, RequestWaiter>();
     private final Map<Integer, RemoteHandlingObject> remoteObjects = new HashMap<>();
 
@@ -106,8 +106,10 @@ public abstract class Client {
     }
 
     public synchronized int registerRemoteObject(RemoteHandlingObject obj) {
-        obj.setObjectId(remoteObjectId);
         remoteObjectId++;
+        while (remoteObjectId == 0 || remoteObjects.containsKey(remoteObjectId))
+            remoteObjectId++;
+        obj.setObjectId(remoteObjectId);
         remoteObjects.put(obj.getObjectId(), obj);
         return obj.getObjectId();
     }

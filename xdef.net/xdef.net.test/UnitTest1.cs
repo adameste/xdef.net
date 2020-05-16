@@ -1,7 +1,10 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.IO;
+using System.IO.Enumeration;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using xdef.net.Sys;
+using xdef.net.Utils;
 
 namespace xdef.net.test
 {
@@ -18,25 +21,12 @@ namespace xdef.net.test
         [TestMethod]
         public void TestMethod1()
         {
-
-            Parallel.For(1, 100, (i) =>
-            {
-                for (int x = 0; x < 1000; x++)
-                {
-                    TestCreatePool();
-                }
-            });
-            return;
+            var pool = XD.Factory.CompileXD(null,new FilePath("xdefs/02.xdef"));
+            var doc = pool.CreateXDDocument();
+            var reporter = new ArrayReporter();
+            var res = doc.XParse(new FilePath("xdefs/02.xml"), reporter);
+            var aa = reporter.PrintToString();
         }
 
-        private void TestCreatePool()
-        {
-            var filePath = "xdefs/01.xdef";
-            using (var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read))
-            {
-                var pool = XD.Instance.Factory.CompileXD(null, File.ReadAllLines(filePath));
-            }
-            return;
-        }
     }
 }

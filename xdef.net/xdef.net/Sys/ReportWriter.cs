@@ -111,5 +111,7 @@ namespace xdef.net.Sys
 		/// <summary>Add to this reporter reports from report reader.</summary>
 		/// <param name="reporter">report reader with reports to be added.</param>
 		void AddReports(ReportReader reporter);
+
+		int ObjectId { get; }
 	}
 }
