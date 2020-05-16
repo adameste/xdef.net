@@ -107,7 +107,7 @@ public abstract class Client {
 
     public synchronized int registerRemoteObject(RemoteHandlingObject obj) {
         remoteObjectId++;
-        while (remoteObjectId == 0 || remoteObjects.containsKey(remoteObjectId))
+        while (remoteObjectId == 0 || remoteObjects.containsKey(remoteObjectId)) // Prevent overflow issue with 0
             remoteObjectId++;
         obj.setObjectId(remoteObjectId);
         remoteObjects.put(obj.getObjectId(), obj);
