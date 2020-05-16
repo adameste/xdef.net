@@ -1,9 +1,7 @@
 package org.xdef.bridge.remoteObjects;
 
-import java.io.IOException;
 import org.xdef.bridge.server.Client;
 import org.xdef.bridge.server.requests.ObjectlessRequestHandler;
-import org.xdef.bridge.server.requests.RemoteCallException;
 import org.xdef.bridge.server.requests.Request;
 import org.xdef.bridge.utils.BinaryDataBuilder;
 

@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.locks.ReentrantLock;
 
 import org.xdef.bridge.remoteObjects.RemoteHandlingObject;
 import org.xdef.bridge.server.requests.ObjectlessRequestHandler;

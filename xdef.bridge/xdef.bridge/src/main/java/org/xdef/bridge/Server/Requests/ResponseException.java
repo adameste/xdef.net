@@ -1,8 +1,6 @@
 package org.xdef.bridge.server.requests;
 
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.xdef.bridge.utils.BinaryDataBuilder;
 import org.xdef.bridge.utils.BinaryDataReader;
 
