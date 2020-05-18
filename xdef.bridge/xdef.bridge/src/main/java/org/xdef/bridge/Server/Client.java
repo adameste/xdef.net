@@ -1,11 +1,11 @@
 package org.xdef.bridge.server;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.TreeMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.xdef.bridge.remoteObjects.RemoteHandlingObject;
 import org.xdef.bridge.server.requests.ObjectlessRequestHandler;
@@ -17,23 +17,18 @@ import org.xdef.bridge.server.requests.ResponseException;
 
 public abstract class Client {
 
-    private int clientId;
-    private int serverRequestId = 1;
-    private int remoteObjectId = 0;
-    private final Map<Integer, RequestWaiter> waitingRequests = new TreeMap<Integer, RequestWaiter>();
-    private final Map<Integer, RemoteHandlingObject> remoteObjects = new HashMap<>();
+    private AtomicInteger serverRequestId = new AtomicInteger(0);
+    private AtomicInteger remoteObjectId = new AtomicInteger(0);
+
+    private final Map<Integer, RequestWaiter> waitingRequests = new ConcurrentHashMap<Integer, RequestWaiter>();
+    private final Map<Integer, RemoteHandlingObject> remoteObjects = new ConcurrentHashMap<Integer, RemoteHandlingObject>();
 
     private final ExecutorService threadPool = Executors.newCachedThreadPool();
 
     private final ObjectlessRequestHandler objectlessRequestHandler;
 
-    public Client(int clientId) {
-        this.clientId = clientId;
+    public Client() {
         this.objectlessRequestHandler = new ObjectlessRequestHandler(this);
-    }
-
-    public int getClientId() {
-        return clientId;
     }
 
     @Override
@@ -47,26 +42,21 @@ public abstract class Client {
 
     protected abstract void sendRequestData(Request request);
 
-    private synchronized int getNextRequestId() {
-        int id = serverRequestId;
-        serverRequestId++;
-        return id;
-    }
 
     public void sendRequestWithoutResponse(Request request) {
         sendRequestData(request);
     }
 
     public Request sendRequestWithResponse(Request request) {
-        int id = getNextRequestId();
+        int id = serverRequestId.incrementAndGet();
         request.setServerRequestId(id);
         RequestWaiter waiter = new RequestWaiter(id);
-        addWaitingRequest(waiter);
+        waitingRequests.put(id, waiter);
         sendRequestData(request);
         try {
             waiter.getSemaphore().acquire();
         } catch (InterruptedException e) {
-            // Not expected to fail, do nothing and return null
+            return null;
         }
         if (ResponseException.isException(request)) {
             RemoteCallException ex = ResponseException.getException(request);
@@ -76,10 +66,9 @@ public abstract class Client {
     }
 
     protected void handleRequest(Request request) {
-        if (waitingRequests.containsKey(request.getServerRequestId())) {
-            RequestWaiter waiter = waitingRequests.get(request.getServerRequestId());
+        RequestWaiter waiter = waitingRequests.remove(request.getServerRequestId());
+        if (waiter != null) {
             waiter.setResponse(request);
-            removeWaitingRequest(waiter);
             waiter.getSemaphore().release();
         } else {
             threadPool.submit(() -> {
@@ -103,25 +92,17 @@ public abstract class Client {
         }
     }
 
-    public synchronized int registerRemoteObject(RemoteHandlingObject obj) {
-        remoteObjectId++;
-        while (remoteObjectId == 0 || remoteObjects.containsKey(remoteObjectId)) // Prevent overflow issue with 0
-            remoteObjectId++;
-        obj.setObjectId(remoteObjectId);
-        remoteObjects.put(obj.getObjectId(), obj);
-        return obj.getObjectId();
+    public int registerRemoteObject(RemoteHandlingObject obj) {
+        int id = remoteObjectId.incrementAndGet();
+        while (id == 0 || remoteObjects.containsKey(id)) // Prevent overflow issue with 0
+            id = remoteObjectId.incrementAndGet();
+        obj.setObjectId(id);
+        remoteObjects.put(id, obj);
+        return id;
     }
 
-    public synchronized void deleteLocalObject(int objectId) {
+    public void deleteLocalObject(int objectId) {
         remoteObjects.remove(objectId);
-    }
-
-    private synchronized void addWaitingRequest(RequestWaiter waiter) {
-        waitingRequests.put(waiter.getRequestId(), waiter);
-    }
-
-    private synchronized void removeWaitingRequest(RequestWaiter waiter) {
-        waitingRequests.remove(waiter.getRequestId());
     }
     
     public RemoteHandlingObject getLocalObject(int objectId) {

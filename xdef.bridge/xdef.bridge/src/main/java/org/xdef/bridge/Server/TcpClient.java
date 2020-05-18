@@ -15,8 +15,8 @@ public class TcpClient extends Client {
     private Socket socket;
     private boolean shouldListen = true;
 
-    public TcpClient(int clientId, Socket socket) {
-        super(clientId);
+    public TcpClient(Socket socket) {
+        super();
         this.socket = socket;
     }
 
@@ -41,12 +41,14 @@ public class TcpClient extends Client {
     }
 
     @Override
-    protected synchronized void sendRequestData(Request request) {
+    protected void sendRequestData(Request request) {
         try {
             OutputStream stream = socket.getOutputStream();
             DataOutputStream dataOutputStream = new DataOutputStream(stream);
-            request.writeToStream(dataOutputStream);
-            dataOutputStream.flush();
+            synchronized(stream){
+                request.writeToStream(dataOutputStream);
+                dataOutputStream.flush();
+            }
         } catch (IOException e) {
             // Client disconnected
             disconnect();
