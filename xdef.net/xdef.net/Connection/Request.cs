@@ -39,6 +39,21 @@ namespace xdef.net.Connection
                     writer.Write(Data);
             }
         }
+        public async Task WriteToStreamAsync(Stream stream)
+        {
+            var str = new MemoryStream();
+            using (var writer = new BigEndianBinaryWriter(str, Encoding.UTF8, true))
+            {
+                writer.Write(ObjectId);
+                writer.Write(Function);
+                writer.Write(ClientRequestId);
+                writer.Write(ServerRequestId);
+                writer.Write(Data == null ? 0 : Data.Length);
+                if (Data != null)
+                    writer.Write(Data);
+                await str.CopyToAsync(stream);
+            }
+        }
 
         public static Request ReadFromStream(Stream stream)
         {

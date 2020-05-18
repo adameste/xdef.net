@@ -13,6 +13,7 @@ namespace xdef.net.Connection
         public abstract void Listen();
         public abstract void Disconnect();
         protected abstract void SendRequestData(Request request);
+        protected abstract Task SendRequestDataAsync(Request request);
 
         private int _clientRequestId = 0;
         private int _currentObjectId = 0;
@@ -50,6 +51,11 @@ namespace xdef.net.Connection
             SendRequestData(request);
         }
 
+        public async Task SendRequestWithoutResponseAsync(Request request)
+        {
+            await SendRequestDataAsync(request);
+        }
+
         public Request SendRequestWithResponse(Request request)
         {
             request.ClientRequestId = Interlocked.Increment(ref _clientRequestId);
@@ -79,7 +85,7 @@ namespace xdef.net.Connection
             }
             else
             {
-                Task.Factory.StartNew(() =>
+                Task.Factory.StartNew(async () =>
                 {
                     Request response = null;
 
@@ -99,14 +105,14 @@ namespace xdef.net.Connection
                     {
                         response.ServerRequestId = request.ServerRequestId;
                         response.ObjectId = request.ObjectId;
-                        SendRequestWithoutResponse(response);
+                        await SendRequestWithoutResponseAsync(response);
                     }
                 });
             }
 
         }
 
-        internal int RegisterObject(RemoteHandlingObject obj)
+        internal int RegisterLocalObject(RemoteHandlingObject obj)
         {
             var objId = Interlocked.Increment(ref _currentObjectId);
             while (_remoteObjects.ContainsKey(objId) || objId == 0) // Prevent overflow of object ids with 0

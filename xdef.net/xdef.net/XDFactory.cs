@@ -59,7 +59,7 @@ namespace xdef.net
                 foreach (var sourceStream in sourceStreams)
                 {
                     var remoteStream = new RemoteStreamWrapper(_client, sourceStream);
-                    var streamId = _client.RegisterObject(remoteStream);
+                    var streamId = _client.RegisterLocalObject(remoteStream);
                     writer.Write(streamId);
                 }
                 writer.Flush();
@@ -167,7 +167,7 @@ namespace xdef.net
                 {
                     writer.Write(OVERLOAD_COMPILEXD_FILES);
                     var wrap = new RemoteStreamWrapper(_client, stream);
-                    writer.Write(_client.RegisterObject(wrap));
+                    writer.Write(_client.RegisterLocalObject(wrap));
                     registeredObjects.Add(wrap);
                 }
                 else

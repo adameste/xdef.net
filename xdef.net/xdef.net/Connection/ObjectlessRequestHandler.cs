@@ -28,7 +28,6 @@ namespace xdef.net.Connection
                         _client.DeleteLocalObject(reader.ReadInt32());
                     }
                     return null;
-                    break;
                 default: return null;
             }
         }

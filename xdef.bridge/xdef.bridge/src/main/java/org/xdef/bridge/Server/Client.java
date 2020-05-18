@@ -39,7 +39,6 @@ public abstract class Client {
     @Override
     protected void finalize() throws Throwable {
         threadPool.shutdown();
-        super.finalize();
     }
 
     public abstract void disconnect();

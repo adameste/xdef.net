@@ -40,6 +40,7 @@ public class XDFactoryWrapper extends RemoteHandlingObject {
         try {
             Properties props = new Properties();
             int propCount = reader.readInt();
+            if (propCount == 0) return null;
             for (int i = 0; i < propCount; i++) {
                 String key = reader.readSharpString();
                 String value = reader.readSharpString();

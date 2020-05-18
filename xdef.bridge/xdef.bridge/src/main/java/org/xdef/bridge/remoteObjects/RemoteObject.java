@@ -35,8 +35,10 @@ public abstract class RemoteObject {
 
     @Override
     protected void finalize() throws Throwable {
-        deleteRemoteObject();
-        super.finalize();
+        try
+        {
+            deleteRemoteObject();
+        } catch (Exception ex) {} // Ignore, finalize should not throw errors.
     }
 
     protected void deleteRemoteObject(){

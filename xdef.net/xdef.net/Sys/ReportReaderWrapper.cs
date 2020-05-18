@@ -60,7 +60,7 @@ namespace xdef.net.Sys
         {
             if (!output.CanWrite) throw new ArgumentException("Stream is not writable.");
             var wrapper = new RemoteStreamWrapper(_client, output);
-            var id = _client.RegisterObject(wrapper);
+            var id = _client.RegisterLocalObject(wrapper);
             var stream = new MemoryStream();
             using (var writer = new BigEndianBinaryWriter(stream))
             {
@@ -112,7 +112,7 @@ namespace xdef.net.Sys
         {
             if (!output.CanWrite) throw new ArgumentException("Stream not writable.");
             var wrap = new RemoteStreamWrapper(_client, output);
-            var id = _client.RegisterObject(wrap);
+            var id = _client.RegisterLocalObject(wrap);
             using (var builder = new BigEndianDataBuilder())
             {
                 _client.SendRequestWithResponse(new Request(FUNCTION_READER_PRINT_REPORTS, builder.Add(id).Add(language).Build(), _objectId));

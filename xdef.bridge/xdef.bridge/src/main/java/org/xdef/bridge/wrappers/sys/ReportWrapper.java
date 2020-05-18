@@ -12,7 +12,7 @@ public class ReportWrapper extends RemoteHandlingObject{
 
     public ReportWrapper(Client client, Report report) {
         super(client);
-        this.report = report;       
+        this.report = report;  
     }
     
     @Override

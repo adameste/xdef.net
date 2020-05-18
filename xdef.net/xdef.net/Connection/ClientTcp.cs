@@ -71,5 +71,12 @@ namespace xdef.net.Connection
 
             base.Dispose(disposing);
         }
+
+        protected override async Task SendRequestDataAsync(Request request)
+        {
+            var stream = _tcpClient.GetStream();
+            await request.WriteToStreamAsync(stream);
+            await stream.FlushAsync();
+        }
     }
 }
