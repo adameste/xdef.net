@@ -72,7 +72,7 @@ namespace xdef.net.Utils
                 Write(bytes);
             }
         }
-        public void Write(IBinaryWriterSerializable value)
+        public void Write(IBinarySerializable value)
         {
             if (value == null) Write(0);
             else value.Serialize(this);

@@ -69,5 +69,14 @@ namespace xdef.net.Utils
             var payload = ReadInt32();
             return _encoding.GetString(ReadBytes(payload));
         }
+
+        internal IEnumerable<string> ReadStringArray()
+        {
+            var cnt = ReadInt32();
+            string[] arr = new string[cnt];
+            for (int i = 0; i < cnt; i++)
+                arr[i] = ReadString();
+            return arr;
+        }
     }
 }

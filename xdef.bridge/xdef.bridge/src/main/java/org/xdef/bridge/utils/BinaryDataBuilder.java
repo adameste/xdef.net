@@ -23,15 +23,20 @@ public class BinaryDataBuilder {
     }
 
     public BinaryDataBuilder add(String x) {
+
         try {
-            byte[] data = x.getBytes(StandardCharsets.UTF_8);
-            dataStream.writeInt(data.length);
-            dataStream.write(data);
+            if (x == null)
+                dataStream.writeInt(0);
+            else {
+                byte[] data = x.getBytes(StandardCharsets.UTF_8);
+                dataStream.writeInt(data.length);
+                dataStream.write(data);
+            }
         } catch (IOException e) {
         }
         return this;
     }
-    
+
     public BinaryDataBuilder add(byte[] buf, int offset, int len) {
         try {
             dataStream.write(buf, offset, len);
@@ -40,8 +45,8 @@ public class BinaryDataBuilder {
         }
         return this;
     }
-    
-     public BinaryDataBuilder add(boolean x) {
+
+    public BinaryDataBuilder add(boolean x) {
         try {
             dataStream.writeBoolean(x);
         } catch (IOException ex) {
@@ -57,6 +62,5 @@ public class BinaryDataBuilder {
         }
         return stream.toByteArray();
     }
-
 
 }

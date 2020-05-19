@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices.ComTypes;
 using System.Text;
+using System.Xml.Linq;
+using xdef.net.Connection;
 
 namespace xdef.net.Utils
 {
@@ -42,7 +44,22 @@ namespace xdef.net.Utils
             _writer.Write(x);
             return this;
         }
+        public BigEndianDataBuilder Add(IBinarySerializable x)
+        {
+            _writer.Write(x);
+            return this;
+        }
 
+        public BigEndianDataBuilder Add(FilePath path)
+        {
+            _writer.Write(path.JavaPath);
+            return this;
+        }
+        public BigEndianDataBuilder Add(Uri url)
+        {
+            _writer.Write(url.AbsoluteUri);
+            return this;
+        }
         public byte[] Build()
         {
             _writer.Flush();
@@ -52,6 +69,12 @@ namespace xdef.net.Utils
         public void Dispose()
         {
             _writer.Dispose();
+        }
+
+        internal BigEndianDataBuilder Add(XNode x)
+        {
+            _writer.Write(x.ToString(SaveOptions.DisableFormatting));
+            return this;
         }
     }
 }

@@ -15,6 +15,8 @@ namespace xdef.net.Connection
         protected abstract void SendRequestData(Request request);
         protected abstract Task SendRequestDataAsync(Request request);
 
+        internal abstract bool IsLocalhost { get; }
+
         private int _clientRequestId = 0;
         private int _currentObjectId = 0;
         private ObjectlessRequestHandler _objectlessRequestHandler;

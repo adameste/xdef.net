@@ -19,20 +19,26 @@ namespace xdef.net
 
         public static bool StartProcess { get; set; } = false;
         public static int Port { get; set; } = 42268;
+        public static string Hostname { get; set; } = "localhost";
         public static string JavaExePath { get; set; }
 
-        public Client Client { get; private set; }
+        internal Client Client { get; private set; }
 
 
         private XD()
         {
             StartJavaBridge();
-            Client = new ClientTcp(Port);
-            Client.Listen();
-            CreateFactoryInitializer();
+            StartClient();
+            CreateXDFactoryInitializer();
         }
 
-        private void CreateFactoryInitializer()
+        private void StartClient()
+        {
+            Client = new ClientTcp(Port, Hostname);
+            Client.Listen();
+        }
+
+        private void CreateXDFactoryInitializer()
         {
             _xdFactory = new Lazy<XDFactory>(() =>
             {
@@ -63,6 +69,7 @@ namespace xdef.net
 
         ~XD()
         {
+            Client?.Disconnect();
             if (_xdefJavaProcess?.HasExited == false)
             {
                 _xdefJavaProcess.Kill();
@@ -72,7 +79,6 @@ namespace xdef.net
                 File.Delete(_tmpFile);
             }
             catch (Exception) { } // Do nothing
-            Client?.Disconnect();
         }
 
         internal static XD Instance => _instance.Value;

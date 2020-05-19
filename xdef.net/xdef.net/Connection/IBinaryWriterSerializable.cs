@@ -5,7 +5,7 @@ using xdef.net.Utils;
 
 namespace xdef.net.Connection
 {
-    public interface IBinaryWriterSerializable
+    public interface IBinarySerializable
     {
         void Serialize(BigEndianBinaryWriter writer);
     }
