@@ -15,6 +15,11 @@ public class XDOutputWrapper extends RemoteHandlingObject {
         this.xdOutput = xdOutput;
     }
 
+    public XDOutput getXdOutput() {
+        return xdOutput;
+    }
+
+
     @Override
     public Response handleRequest(Request request) {
         // TODO Auto-generated method stub

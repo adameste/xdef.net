@@ -41,9 +41,9 @@ namespace xdef.codegen
                     _methods.Add(new JavaMethod()
                     {
                         OriginalDefinition = line,
-                        ReturnType = parsed.Groups[1].Value.Split('.').Last(),
+                        ReturnType = parsed.Groups[1].Value.Split('.').Last().Trim(),
                         Name = parsed.Groups[2].Value,
-                        Arguments = parsed.Groups[3].Value.Split(',').Select(p => p.Split('.').Last()).ToList()
+                        Arguments = parsed.Groups[3].Value.Split(',').Select(p => p.Split('.').Last().Trim()).ToList()
                     }) ;
                 }
             }

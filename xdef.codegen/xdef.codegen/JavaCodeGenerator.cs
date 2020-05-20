@@ -9,7 +9,9 @@ namespace xdef.codegen
 {
     public class JavaCodeGenerator : CodeGenerator
     {
-        private string InstanceName { get
+        private string InstanceName
+        {
+            get
             {
                 var className = _className.Split('.').Last();
                 if (className.StartsWith("XD"))
@@ -23,11 +25,13 @@ namespace xdef.codegen
         private Dictionary<string, string> _argumentReaderTable = new Dictionary<string, string>()
         {
             { "int", "reader.readInt()" },
-            { "String", "reader.ReadSharpString()" },
+            { "String", "reader.readSharpString()" },
+            { "URL", "new URL(reader.readSharpString()" },
             { "InputStream", "new RemoteInputStream(new RemoteStreamWrapper(client, reader.readInt()))" },
+            { "OutputStream", "new RemoteOutputStream(new RemoteStreamWrapper(client, reader.readInt()))" },
             { "ReportWriter", "(ReportWriter) client.getLocalObject(reader.readInt())"},
             { "ReportReader", "(ReportReader) client.getLocalObject(reader.readInt())"},
-            { "File", "new File(reader.ReadSharpString())" },
+            { "File", "new File(reader.readSharpString())" },
             { "Element", "reader.readElement()" }
         };
 
@@ -35,11 +39,17 @@ namespace xdef.codegen
         {
             { "int", "reader.readInt()" },
             { "String", "reader.readSharpString()" },
+            { "boolean", "reader.readBoolean()" },
             { "InputStream", "new RemoteInputStream(new RemoteStreamWrapper(client, reader.readInt()))" },
             { "ReportWriter", "(ReportWriter) client.getLocalObject(reader.readInt())"},
             { "ReportReader", "(ReportReader) client.getLocalObject(reader.readInt())"},
             { "File", "new File(reader.readSharpString())" },
             { "Element", "reader.readElement()" }
+        };
+
+        private List<string> _nonWrappingTypes = new List<string>()
+        {
+            "int", "boolean", "String", "byte", "Element", "Document", "void"
         };
 
         public JavaCodeGenerator(string jarPath, string className) : base(jarPath, className)
@@ -99,27 +109,49 @@ namespace xdef.codegen
                 var i = 1;
                 foreach (var arg in it.Arguments.Where(x => !string.IsNullOrWhiteSpace(x)))
                 {
-                writer.Write($@"
+                    writer.Write($@"
         {arg} arg{i++} = {(_argumentReaderTable.TryGetValue(arg, out var x) ? x : "reader.read" + arg + "()")};");
                 }
                 writer.Write($@"
-        // Do actions
-        {it.ReturnType}Wrapper wrap = new {it.ReturnType}Wrapper(client, {InstanceName}.{it.Name}({string.Join(",", Enumerable.Range(1, it.Arguments.Where(x => !string.IsNullOrWhiteSpace(x)).Count()).Select(p => $"arg{p}"))}));
-        BinaryDataBuilder builder = new BinaryDataBuilder();
-        builder.add(client.registerRemoteObject(wrap));
+        // Do actions");
+                if (_nonWrappingTypes.Contains(it.ReturnType))
+                {
+                    writer.Write($@"
+        {it.ReturnType} res = {InstanceName}.{it.Name}({string.Join(",", Enumerable.Range(1, it.Arguments.Where(x => !string.IsNullOrWhiteSpace(x)).Count()).Select(p => $"arg{p}"))});");
+                }
+                else
+                {
+
+                    writer.Write($@"
+        {it.ReturnType}Wrapper wrap = new {it.ReturnType}Wrapper(client, {InstanceName}.{it.Name}({string.Join(",", Enumerable.Range(1, it.Arguments.Where(x => !string.IsNullOrWhiteSpace(x)).Count()).Select(p => $"arg{p}"))}));");
+                }
+                writer.Write($@"
+        BinaryDataBuilder builder = new BinaryDataBuilder();");
+                if (_nonWrappingTypes.Contains(it.ReturnType))
+                {
+                    writer.Write($@"
+        builder.add(res);");
+                }
+                else
+                {
+                    writer.Write($@"
+        builder.add(client.registerRemoteObject(wrap));");
+                }
+                writer.Write($@"
         return new Response(builder.build());
     }}
 ");
+
             }
         }
 
-        private void GenerateConsts(StringWriter writer)
+    private void GenerateConsts(StringWriter writer)
+    {
+        int i = 1;
+        foreach (var it in _methods)
         {
-            int i = 1;
-            foreach (var it in _methods)
-            {
-                writer.WriteLine($"private static final int {it.ConstName} = {i++};") ;
-            }
+            writer.WriteLine($"private static final int {it.ConstName} = {i++};");
         }
     }
+}
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices.ComTypes;
 using System.Text;
+using System.Xml;
 using System.Xml.Linq;
 using xdef.net.Connection;
 
@@ -75,6 +76,11 @@ namespace xdef.net.Utils
         {
             _writer.Write(x.ToString(SaveOptions.DisableFormatting));
             return this;
+        }
+
+        internal void Add(XmlQualifiedName arg0)
+        {
+            Add(arg0.Namespace).Add(arg0.Name);
         }
     }
 }

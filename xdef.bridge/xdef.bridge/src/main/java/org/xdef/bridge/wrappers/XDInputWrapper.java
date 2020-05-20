@@ -17,6 +17,11 @@ public class XDInputWrapper extends RemoteHandlingObject {
         // TODO Auto-generated constructor stub
     }
 
+    public XDInput getXdInput() {
+        return xdInput;
+    }
+
+
     @Override
     public Response handleRequest(Request request) {
         // TODO Auto-generated method stub

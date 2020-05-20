@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.CompilerServices;
@@ -63,12 +64,20 @@ namespace xdef.net
                 FileName = JavaExePath ?? "java",
                 Arguments = $"-jar \"{_tmpFile}\" {Port}"
             });
-            var line = _xdefJavaProcess.StandardOutput.ReadLine(); // Listening
+            var line = _xdefJavaProcess.StandardOutput.ReadLine(); // Listenin
+            _xdefJavaProcess.BeginOutputReadLine();
+            _xdefJavaProcess.OutputDataReceived += _xdefJavaProcess_OutputDataReceived;
             Debug.WriteLine($"Java process started: {line}");
+        }
+
+        private void _xdefJavaProcess_OutputDataReceived(object sender, DataReceivedEventArgs e)
+        {
+            Console.Out.WriteLine(e.Data);
         }
 
         ~XD()
         {
+            _xdefJavaProcess.OutputDataReceived -= _xdefJavaProcess_OutputDataReceived;
             Client?.Disconnect();
             if (_xdefJavaProcess?.HasExited == false)
             {
