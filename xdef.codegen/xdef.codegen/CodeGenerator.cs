@@ -12,7 +12,7 @@ namespace xdef.codegen
     public abstract class CodeGenerator
     {
         private readonly string _jarPath;
-        private readonly string _className;
+        protected readonly string _className;
 
         protected List<JavaMethod> _methods = new List<JavaMethod>();
 
