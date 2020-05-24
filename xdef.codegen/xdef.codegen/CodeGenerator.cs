@@ -37,10 +37,18 @@ namespace xdef.codegen
                     IsStatic = parsed.Groups[1].Value == "static",
                     ReturnType = parsed.Groups[2].Value.Split('.').Last().Trim(),
                     Name = parsed.Groups[3].Value,
-                    Arguments = parsed.Groups[4].Value.Split(',').Select(p => p.Split('.').Last().Trim()).ToList()
+                    Arguments = parsed.Groups[4].Value.Split(',').Select(p => getArgumentType(p)).ToList()
                 });
             }
             HandleDuplicitMethods();
+        }
+
+        private string getArgumentType(string argList)
+        {
+            if (argList.EndsWith("..."))
+                return argList.Split('.', StringSplitOptions.RemoveEmptyEntries).Last() + "...";
+            else
+                return argList.Split('.').Last().Trim();
         }
 
         private void HandleDuplicitMethods()
