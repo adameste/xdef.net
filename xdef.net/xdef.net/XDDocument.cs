@@ -81,7 +81,7 @@ namespace xdef.net
         private const int FUNCTION_XTRANSLATE_1 = 65;
         private const int FUNCTION_XTRANSLATE_2 = 66;
 
-        public XDDocument(int objectId, Client client) : base(objectId, client)
+        internal XDDocument(int objectId, Client client) : base(objectId, client)
         {
         }
 

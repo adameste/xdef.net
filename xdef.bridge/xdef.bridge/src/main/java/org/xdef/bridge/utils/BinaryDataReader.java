@@ -63,5 +63,4 @@ public class BinaryDataReader extends CustomDataInputStream {
             return null;
         }
     }
-    
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -26,16 +27,17 @@ namespace xdef.codegen
         private void ParsePublicMethods()
         {
             var parserOutput = GetParserOutput();
-            var regex = new Regex("public.* (.*) (.*)\\((.*)\\)");
+            var regex = new Regex("public ?([^\\s]*) (.*) (.*)\\((.*)\\)");
             var results = regex.Matches(parserOutput);
             foreach (Match parsed in results)
             {
                 _methods.Add(new JavaMethod()
                 {
                     OriginalDefinition = parsed.Groups[0].Value,
-                    ReturnType = parsed.Groups[1].Value.Split('.').Last().Trim(),
-                    Name = parsed.Groups[2].Value,
-                    Arguments = parsed.Groups[3].Value.Split(',').Select(p => p.Split('.').Last().Trim()).ToList()
+                    IsStatic = parsed.Groups[1].Value == "static",
+                    ReturnType = parsed.Groups[2].Value.Split('.').Last().Trim(),
+                    Name = parsed.Groups[3].Value,
+                    Arguments = parsed.Groups[4].Value.Split(',').Select(p => p.Split('.').Last().Trim()).ToList()
                 });
             }
             HandleDuplicitMethods();

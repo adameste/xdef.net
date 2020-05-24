@@ -22,9 +22,12 @@ namespace xdef.codegen
             }
         }
 
+        private string ClassName => _className.Split('.').Last();
+
         private Dictionary<string, string> _argumentReaderTable = new Dictionary<string, string>()
         {
             { "int", "reader.readInt()" },
+            { "long", "reader.readLong()" },
             { "String", "reader.readSharpString()" },
             { "URL", "new URL(reader.readSharpString()" },
             { "InputStream", "new RemoteInputStream(new RemoteStreamWrapper(client, reader.readInt()))" },
@@ -49,7 +52,7 @@ namespace xdef.codegen
 
         private List<string> _nonWrappingTypes = new List<string>()
         {
-            "int", "boolean", "String", "byte", "Element", "Document", "void"
+            "int", "boolean", "String", "byte", "Element", "Document", "void", "long"
         };
 
         public JavaCodeGenerator(string jarPath, string className) : base(jarPath, className)
@@ -117,13 +120,13 @@ namespace xdef.codegen
                 if (_nonWrappingTypes.Contains(it.ReturnType))
                 {
                     writer.Write($@"
-        {it.ReturnType} res = {InstanceName}.{it.Name}({string.Join(",", Enumerable.Range(1, it.Arguments.Where(x => !string.IsNullOrWhiteSpace(x)).Count()).Select(p => $"arg{p}"))});");
+        {it.ReturnType} res = {(it.IsStatic ? ClassName : InstanceName)}.{it.Name}({string.Join(",", Enumerable.Range(1, it.Arguments.Where(x => !string.IsNullOrWhiteSpace(x)).Count()).Select(p => $"arg{p}"))});");
                 }
                 else
                 {
 
                     writer.Write($@"
-        {it.ReturnType}Wrapper wrap = new {it.ReturnType}Wrapper(client, {InstanceName}.{it.Name}({string.Join(",", Enumerable.Range(1, it.Arguments.Where(x => !string.IsNullOrWhiteSpace(x)).Count()).Select(p => $"arg{p}"))}));");
+        {it.ReturnType}Wrapper wrap = new {it.ReturnType}Wrapper(client, {(it.IsStatic ? ClassName : InstanceName)}.{it.Name}({string.Join(",", Enumerable.Range(1, it.Arguments.Where(x => !string.IsNullOrWhiteSpace(x)).Count()).Select(p => $"arg{p}"))}));");
                 }
                 writer.Write($@"
         BinaryDataBuilder builder = new BinaryDataBuilder();");

@@ -33,6 +33,14 @@ public class BinaryDataBuilder {
         return this;
     }
 
+    public BinaryDataBuilder add(long x) {
+        try {
+            dataStream.writeLong(x);
+        } catch (IOException e) {
+        }
+        return this;
+    }
+
     public BinaryDataBuilder add(String x) {
 
         try {

@@ -59,7 +59,7 @@ namespace xdef.net
         private const int OBJECT_TYPE_URL = 4;
 
 
-        public XDFactory(int objectId, Client client) : base(objectId, client)
+        internal XDFactory(int objectId, Client client) : base(objectId, client)
         {
         }
 
