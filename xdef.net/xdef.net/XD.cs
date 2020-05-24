@@ -65,8 +65,8 @@ namespace xdef.net
                 Arguments = $"-jar \"{_tmpFile}\" {Port}"
             });
             var line = _xdefJavaProcess.StandardOutput.ReadLine(); // Listenin
-            _xdefJavaProcess.BeginOutputReadLine();
             _xdefJavaProcess.OutputDataReceived += _xdefJavaProcess_OutputDataReceived;
+            _xdefJavaProcess.BeginOutputReadLine();
             Debug.WriteLine($"Java process started: {line}");
         }
 

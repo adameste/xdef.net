@@ -188,6 +188,7 @@ public class XDFactoryWrapper extends RemoteHandlingObject {
         XDBuilder res = XDFactory.getXDBuilder(props);
         XDBuilderWrapper wrap =  new XDBuilderWrapper(client, res);
         BinaryDataBuilder builder = new BinaryDataBuilder();
+        
         builder.add(client.registerRemoteObject(wrap));
         return new Response(builder.build());
     }

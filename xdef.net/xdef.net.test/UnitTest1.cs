@@ -23,30 +23,38 @@ namespace xdef.net.test
         public void TestMethod1()
         {
             var pool = XD.Factory.CompileXD(null, new FilePath("xdefs/02.xdef"));
+            pool.DisplayCode();
             var doc = pool.CreateXDDocument();
             var reporter = new ArrayReporter();
             var res = doc.Xparse(new FilePath("xdefs/02.xml"), reporter);
             var aa = reporter.PrintToString();
+        }
+
+
+        [TestMethod]
+        public void TestMethod2()
+        {
+            var pool = XD.Factory.CompileXD(null, new FilePath("xdefs/02.xdef"));
+            Parallel.ForEach(Enumerable.Range(0, 1000), new ParallelOptions() { MaxDegreeOfParallelism = 1 }, (_) =>
+            {
+                var doc = pool.CreateXDDocument();
+                var reporter = new ArrayReporter();
+                var res = doc.Xparse(new FilePath("xdefs/02.xml"), reporter);
+                var aa = reporter.PrintToString();
+            });
         }
 
         [TestMethod]
         public void TestMethod3()
         {
             var pool = XD.Factory.CompileXD(null, new FilePath("xdefs/02.xdef"));
-            var doc = pool.CreateXDDocument();
-            var reporter = new ArrayReporter();
-            var res = doc.Xparse(new FilePath("xdefs/02.xml"), reporter);
-            var aa = reporter.PrintToString();
+            Parallel.ForEach(Enumerable.Range(0, 1000), new ParallelOptions() { MaxDegreeOfParallelism = 4 }, (_) =>
+             {
+                var doc = pool.CreateXDDocument();
+                var reporter = new ArrayReporter();
+                var res = doc.Xparse(new FilePath("xdefs/02.xml"), reporter);
+                var aa = reporter.PrintToString();
+             });
         }
-
-        [TestMethod]
-        public void TestMethod2()
-        {
-            var reporter = new ArrayReporter();
-            var doc = XD.Factory.Xparse(File.ReadAllText("xdefs/02.xdef"), reporter);
-            doc.Xparse(new FilePath("xdefs/02.xml"), null);
-            Assert.IsNotNull(doc);
-        }
-
     }
 }
