@@ -4,7 +4,7 @@ using System.Text;
 
 namespace xdef.net.Connection
 {
-    class CreateObjectRequest : Request
+    internal class CreateObjectRequest : Request
     {
         private const int FUNCTION_CREATE_OBJECT = 1;
 

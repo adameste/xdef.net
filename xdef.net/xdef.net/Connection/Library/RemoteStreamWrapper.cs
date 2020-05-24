@@ -6,7 +6,7 @@ using xdef.net.Utils;
 
 namespace xdef.net.Connection.Library
 {
-    class RemoteStreamWrapper : RemoteHandlingObject
+    internal class RemoteStreamWrapper : RemoteHandlingObject
     {
         private const int FUNCTION_AVAILABLE = 1;
         private const int FUNCTION_CLOSE = 2;

@@ -83,6 +83,7 @@ public class ReportReaderWrapper extends RemoteHandlingObject{
         {
             reportReader.printReports(new PrintStream(outputStream), lang);
         }
+        outputStream.flush();
         return new EmptyResponse();           
     }
 

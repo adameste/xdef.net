@@ -8,7 +8,7 @@ using System.Xml.Schema;
 
 namespace xdef.net.Connection
 {
-    public abstract class Client : IDisposable
+    internal abstract class Client : IDisposable
     {
         public abstract void Listen();
         public abstract void Disconnect();

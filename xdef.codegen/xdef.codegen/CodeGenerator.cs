@@ -25,27 +25,18 @@ namespace xdef.codegen
 
         private void ParsePublicMethods()
         {
-            var parserOutput = GerParserOutput();
-            using (var reader = new StringReader(parserOutput))
+            var parserOutput = GetParserOutput();
+            var regex = new Regex("public.* (.*) (.*)\\((.*)\\)");
+            var results = regex.Matches(parserOutput);
+            foreach (Match parsed in results)
             {
-                reader.ReadLine(); // Compiled from
-                reader.ReadLine(); // classdef
-                var regex = new Regex(".*\\s(.*)\\s(.*).*\\((.*)\\)");
-                while (true)
+                _methods.Add(new JavaMethod()
                 {
-                    string line = reader.ReadLine();
-                    // Skip consts and public fields
-                    if (line.ToLower().Contains("final") && !line.ToLower().Contains("(")) continue;
-                    if (line.StartsWith("}")) break;
-                    var parsed = regex.Match(line);
-                    _methods.Add(new JavaMethod()
-                    {
-                        OriginalDefinition = line,
-                        ReturnType = parsed.Groups[1].Value.Split('.').Last().Trim(),
-                        Name = parsed.Groups[2].Value,
-                        Arguments = parsed.Groups[3].Value.Split(',').Select(p => p.Split('.').Last().Trim()).ToList()
-                    }) ;
-                }
+                    OriginalDefinition = parsed.Groups[0].Value,
+                    ReturnType = parsed.Groups[1].Value.Split('.').Last().Trim(),
+                    Name = parsed.Groups[2].Value,
+                    Arguments = parsed.Groups[3].Value.Split(',').Select(p => p.Split('.').Last().Trim()).ToList()
+                });
             }
             HandleDuplicitMethods();
         }
@@ -67,7 +58,7 @@ namespace xdef.codegen
             }
         }
 
-        private string GerParserOutput()
+        private string GetParserOutput()
         {
             var process = Process.Start(new ProcessStartInfo()
             {

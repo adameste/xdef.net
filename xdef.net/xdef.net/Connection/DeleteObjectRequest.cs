@@ -5,7 +5,7 @@ using xdef.net.Utils;
 
 namespace xdef.net.Connection
 {
-    class DeleteObjectRequest : Request
+    internal class DeleteObjectRequest : Request
     {
         private const int FUNCTION_DELETE_OBJECT = 2;
 

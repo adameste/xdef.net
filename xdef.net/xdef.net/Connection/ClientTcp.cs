@@ -10,7 +10,7 @@ using System.Transactions;
 
 namespace xdef.net.Connection
 {
-    public class ClientTcp : Client
+    internal class ClientTcp : Client
     {
         private TcpClient _tcpClient;
         private bool _shouldListen = true;
