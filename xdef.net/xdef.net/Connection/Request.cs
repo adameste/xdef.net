@@ -9,7 +9,7 @@ using xdef.net.Utils;
 
 namespace xdef.net.Connection
 {
-    public class Request
+    internal class Request
     {
         public int ObjectId { get; set; }
         public int Function { get; set; }
@@ -17,7 +17,7 @@ namespace xdef.net.Connection
         public int ServerRequestId { get; set; }
         public byte[] Data { get; set; }
 
-        public Request(int function, byte[] data, int objectId = 0)
+        internal Request(int function, byte[] data, int objectId = 0)
         {
             Function = function;
             Data = data;
@@ -26,7 +26,7 @@ namespace xdef.net.Connection
 
         public Request() { }
 
-        public void WriteToStream(Stream stream)
+        internal void WriteToStream(Stream stream)
         {
             using (var writer = new BigEndianBinaryWriter(stream, Encoding.UTF8, true))
             {
@@ -39,7 +39,7 @@ namespace xdef.net.Connection
                     writer.Write(Data);
             }
         }
-        public async Task WriteToStreamAsync(Stream stream)
+        internal async Task WriteToStreamAsync(Stream stream)
         {
             var str = new MemoryStream();
             using (var writer = new BigEndianBinaryWriter(str, Encoding.UTF8, true))
@@ -55,7 +55,7 @@ namespace xdef.net.Connection
             }
         }
 
-        public static Request ReadFromStream(Stream stream)
+        internal static Request ReadFromStream(Stream stream)
         {
             using (var reader = new BigEndianBinaryReader(stream, Encoding.UTF8, true))
             {
@@ -70,7 +70,7 @@ namespace xdef.net.Connection
             }
         }
 
-        public BigEndianBinaryReader Reader => new BigEndianBinaryReader(new MemoryStream(Data), Encoding.UTF8);
-        public int ResultObjectId => BigEndianBitConverter.ToInt32(Data, 0);
+        internal BigEndianBinaryReader Reader => new BigEndianBinaryReader(new MemoryStream(Data), Encoding.UTF8);
+        internal int ResultObjectId => BigEndianBitConverter.ToInt32(Data, 0);
     }
 }

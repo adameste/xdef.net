@@ -24,7 +24,13 @@
     <None Update="xdefs\02.xdef">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="xdefs\02.xml">
+    <None Update="xdefs\02_large.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="xdefs\02_medium.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="xdefs\02_small.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

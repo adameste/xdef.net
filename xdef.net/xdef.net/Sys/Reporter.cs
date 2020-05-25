@@ -8,8 +8,8 @@ namespace xdef.net.Sys
 {
     public class Reporter : RemoteObject, ReportReader, ReportWriter
     {
-        protected ReportReaderWrapper _reportReaderWrapper;
-        protected ReportWriterWrapper _reportWriterWrapper;
+        internal ReportReaderWrapper _reportReaderWrapper;
+        internal ReportWriterWrapper _reportWriterWrapper;
 
         public Reporter() : base(0, XD.Instance.Client)
         {

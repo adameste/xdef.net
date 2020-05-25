@@ -53,10 +53,6 @@ namespace xdef.net.Connection
             SendRequestData(request);
         }
 
-        public async Task SendRequestWithoutResponseAsync(Request request)
-        {
-            await SendRequestDataAsync(request);
-        }
 
         public Request SendRequestWithResponse(Request request)
         {
@@ -87,7 +83,7 @@ namespace xdef.net.Connection
             }
             else
             {
-                Task.Factory.StartNew(async () =>
+                Task.Factory.StartNew(() =>
                 {
                     Request response = null;
 
@@ -107,7 +103,7 @@ namespace xdef.net.Connection
                     {
                         response.ServerRequestId = request.ServerRequestId;
                         response.ObjectId = request.ObjectId;
-                        await SendRequestWithoutResponseAsync(response);
+                        SendRequestWithoutResponse(response);
                     }
                 });
             }
@@ -119,8 +115,8 @@ namespace xdef.net.Connection
             var objId = Interlocked.Increment(ref _currentObjectId);
             while (_remoteObjects.ContainsKey(objId) || objId == 0) // Prevent overflow of object ids with 0
                 objId = Interlocked.Increment(ref _currentObjectId);
-            _remoteObjects[obj.ObjectId] = obj;
-
+            _remoteObjects[objId] = obj;
+            obj.ObjectId = objId;
             return obj.ObjectId;
         }
 

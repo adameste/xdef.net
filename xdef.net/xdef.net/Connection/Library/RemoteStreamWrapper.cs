@@ -55,12 +55,11 @@ namespace xdef.net.Connection.Library
                 var len = reader.ReadInt32();
                 var buf = new byte[len];
                 var bytesRead = _stream.Read(buf, 0, len);
-                var stream = new MemoryStream();
-                using (var writer = new BigEndianBinaryWriter(stream))
+                using (var builder = new BigEndianDataBuilder())
                 {
-                    writer.Write(bytesRead);
-                    writer.Write(buf, 0, bytesRead);
-                    return new Response(stream.ToArray());
+                    builder.Add(bytesRead)
+                        .Add(buf);
+                    return new Response(builder.Build());
                 }
             }
         }

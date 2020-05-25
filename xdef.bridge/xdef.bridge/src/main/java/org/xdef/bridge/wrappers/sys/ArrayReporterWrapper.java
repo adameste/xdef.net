@@ -12,8 +12,8 @@ public class ArrayReporterWrapper extends ReporterWrapper{
         arrayReporter = new ArrayReporter();
         reportReader = arrayReporter;
         reportWriter = arrayReporter;
-        reportReaderWrapper = new ReportReaderWrapper(client, getObjectId(), reportReader);
-        reportWriterWrapper = new ReportWriterWrapper(client, getObjectId(), reportWriter);
+        reportReaderWrapper = new ReportReaderWrapper(client, reportReader);
+        reportWriterWrapper = new ReportWriterWrapper(client, reportWriter);
     }
     
 }

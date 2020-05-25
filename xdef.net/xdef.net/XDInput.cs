@@ -7,7 +7,7 @@ namespace xdef.net
 {
     public class XDInput : RemoteObject
     {
-        public XDInput(int objectId, Client client) : base(objectId, client)
+        internal XDInput(int objectId, Client client) : base(objectId, client)
         {
         }
     }

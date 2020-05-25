@@ -38,9 +38,8 @@ public class ObjectlessRequestHandler {
     private Response createObject(Request request) {
         RemoteObjectFactory remoteObjectFactory = new RemoteObjectFactory(client);
         RemoteHandlingObject obj = remoteObjectFactory.createObject(request);
-        client.registerRemoteObject(obj);
         BinaryDataBuilder builder = new BinaryDataBuilder();
-        builder.add(obj.getObjectId());
+        builder.add(client.registerRemoteObject(obj));
         Response response = new Response(builder.build());
         return response;
     }  

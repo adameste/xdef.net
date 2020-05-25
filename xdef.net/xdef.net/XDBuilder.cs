@@ -7,7 +7,7 @@ namespace xdef.net
 {
     public class XDBuilder : RemoteObject
     {
-        public XDBuilder(int objectId, Client client) : base(objectId, client)
+        internal XDBuilder(int objectId, Client client) : base(objectId, client)
         {
         }
     }

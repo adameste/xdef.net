@@ -4,7 +4,7 @@ using System.Text;
 
 namespace xdef.net.Connection
 {
-    public abstract class RemoteHandlingObject : RemoteObject
+    internal abstract class RemoteHandlingObject : RemoteObject
     {
         public RemoteHandlingObject(Client client) : base(0, client)
         {

@@ -4,16 +4,10 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.StringWriter;
 import java.net.URL;
 import java.util.Properties;
 
 import javax.xml.namespace.QName;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -33,7 +27,6 @@ import org.xdef.bridge.wrappers.streams.RemoteInputStream;
 import org.xdef.bridge.wrappers.streams.RemoteOutputStream;
 import org.xdef.bridge.wrappers.streams.RemoteStreamWrapper;
 import org.xdef.sys.ReportWriter;
-import org.xdef.sys.SRuntimeException;
 
 public class XDDocumentWrapper extends RemoteHandlingObject {
 

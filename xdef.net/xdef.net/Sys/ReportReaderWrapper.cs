@@ -21,7 +21,7 @@ namespace xdef.net.Sys
         private const int FUNCTION_READER_PRINT_TO_STRING = 4;
         private const int FUNCTION_READER_WRITE_REPORTS = 5;
 
-        public ReportReaderWrapper(Client client, int objectId)
+        internal ReportReaderWrapper(Client client, int objectId)
         {
             _client = client;
             _objectId = objectId;

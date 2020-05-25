@@ -48,7 +48,7 @@ namespace xdef.net
 
 
 
-        public XDPool(int objectId, Client client) : base(objectId, client)
+        internal XDPool(int objectId, Client client) : base(objectId, client)
         {
 
         }

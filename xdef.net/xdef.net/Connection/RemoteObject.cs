@@ -7,10 +7,10 @@ namespace xdef.net.Connection
 {
     public abstract class RemoteObject
     {
-        protected Client _client;
+        internal Client _client;
         internal int ObjectId { get; set; }
 
-        public RemoteObject(int objectId, Client client)
+        internal RemoteObject(int objectId, Client client)
         {
             ObjectId = objectId;
             _client = client;
@@ -26,13 +26,13 @@ namespace xdef.net.Connection
         }
 
 
-        protected void SendRequest(Request request)
+        internal void SendRequest(Request request)
         {
             request.ObjectId = ObjectId;
             _client.SendRequestWithoutResponse(request);
         }
 
-        protected Request SendRequestWithResponse(Request request)
+        internal Request SendRequestWithResponse(Request request)
         {
             request.ObjectId = ObjectId;
             return _client.SendRequestWithResponse(request);

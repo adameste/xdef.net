@@ -25,6 +25,11 @@ namespace xdef.net.Utils
             _writer.Write(x);
             return this;
         }
+        public BigEndianDataBuilder Add(byte[] x)
+        {
+            _writer.Write(x);
+            return this;
+        }
         public BigEndianDataBuilder Add(int x)
         {
             _writer.Write(x);

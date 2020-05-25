@@ -5,9 +5,9 @@ using xdef.net.Connection;
 
 namespace xdef.net
 {
-    public class XDContainer : RemoteObject
+    internal class XDContainer : RemoteObject
     {
-        public XDContainer(int objectId, Client client) : base(objectId, client)
+        internal XDContainer(int objectId, Client client) : base(objectId, client)
         {
         }
     }

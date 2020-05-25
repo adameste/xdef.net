@@ -14,7 +14,7 @@ import org.xdef.sys.ReportReader;
 import org.xdef.sys.ReportWriter;
 import org.xdef.sys.SRuntimeException;
 
-public class ReportWriterWrapper extends RemoteHandlingObject {
+public class ReportWriterWrapper {
 
     private final static int FUNCTION_WRITER_LANGUAGE = 1001;
     private final static int FUNCTION_WRITER_LAST_ERROR_REPORT = 1002;
@@ -35,14 +35,13 @@ public class ReportWriterWrapper extends RemoteHandlingObject {
     private final static int FUNCTION_WRITER_CLOSE = 1017;
 
     private final ReportWriter reportWriter;
+    private Client client;
 
-    public ReportWriterWrapper(Client client, int objectId, ReportWriter writer) {
-        super(client);
+    public ReportWriterWrapper(Client client, ReportWriter writer) {
+        this.client = client;
         this.reportWriter = writer;
-        setObjectId(objectId);
     }
 
-    @Override
     public Response handleRequest(Request request) {
         BinaryDataReader reader = request.getReader();
         try

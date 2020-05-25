@@ -7,7 +7,7 @@ namespace xdef.net
 {
     public class XDElement : RemoteObject
     {
-        public XDElement(int objectId, Client client) : base(objectId, client)
+        internal XDElement(int objectId, Client client) : base(objectId, client)
         {
         }
     }

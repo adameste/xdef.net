@@ -1,12 +1,11 @@
-﻿<xd:def xmlns:xd = "http://www.xdef.org/xdef/4.0" root = "Family">  
-  
-<Family>  
-    <Father   xd:script = "optional; ref Person;" />  
-    <Mother   xd:script = "required; ref Person;" />  
-    <Son      xd:script = "occurs *; ref Person;" />  
-    <Daughter xd:script = "occurs *; ref Person;" />  
-</Family>  
-  
-<Person Firstname = "string();" Familyname = "string();" BirthDate = "date();" />  
-  
-</xd:def> 
+﻿<xd:def xmlns:xd = "http://www.xdef.org/xdef/4.0" root = "World">
+  <World>
+    <Family xd:script = "occurs *;">
+      <Father   xd:script = "optional; ref Person;" />
+      <Mother   xd:script = "required; ref Person;" />
+      <Son      xd:script = "occurs *; ref Person;" />
+      <Daughter xd:script = "occurs *; ref Person;" />
+    </Family>
+  </World>
+  <Person Firstname = "string();" Familyname = "string();" BirthDate = "date();" />
+</xd:def>

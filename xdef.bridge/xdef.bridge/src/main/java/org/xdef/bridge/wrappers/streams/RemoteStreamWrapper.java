@@ -23,7 +23,7 @@ public class RemoteStreamWrapper extends RemoteObject {
         Request response = sendRequestWithResponse(new Request(FUNCTION_AVAILABLE, null));
         try {
             return response.getReader().readInt();
-        } catch (IOException e) {
+        } catch (IOException e) {   
             return 0;
         }
     }

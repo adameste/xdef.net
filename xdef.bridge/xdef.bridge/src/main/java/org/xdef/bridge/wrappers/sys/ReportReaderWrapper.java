@@ -16,7 +16,7 @@ import org.xdef.sys.Report;
 import org.xdef.sys.ReportReader;
 import org.xdef.sys.ReportWriter;
 
-public class ReportReaderWrapper extends RemoteHandlingObject{
+public class ReportReaderWrapper{
 
     private final static int FUNCTION_READER_REPORT = 1;
     private final static int FUNCTION_READER_CLOSE = 2;
@@ -25,15 +25,14 @@ public class ReportReaderWrapper extends RemoteHandlingObject{
     private final static int FUNCTION_READER_WRITE_REPORTS= 5;
     
     private final ReportReader reportReader;
+    private Client client;
 
-    public ReportReaderWrapper(Client client, int objectId, ReportReader reader) {
-        super(client);
-        setObjectId(objectId);
+    public ReportReaderWrapper(Client client, ReportReader reader) {
+        this.client = client;
         this.reportReader = reader;
     }
 
     
-    @Override
     public Response handleRequest(Request request) {
         try
         {

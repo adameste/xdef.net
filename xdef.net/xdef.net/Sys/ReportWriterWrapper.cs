@@ -6,7 +6,7 @@ using xdef.net.Utils;
 
 namespace xdef.net.Sys
 {
-    public sealed class ReportWriterWrapper : ReportWriter
+    internal sealed class ReportWriterWrapper : ReportWriter
     {
         private readonly Client _client;
         private readonly int _objectId;
@@ -31,7 +31,7 @@ namespace xdef.net.Sys
         private const int FUNCTION_WRITER_CLOSE = 1017;
 
 
-        public ReportWriterWrapper(Client client, int objectId)
+        internal ReportWriterWrapper(Client client, int objectId)
         {
             _client = client;
             _objectId = objectId;

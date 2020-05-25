@@ -1,0 +1,535 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>xdef.net</name>
+    </assembly>
+    <members>
+        <member name="T:xdef.net.Properties.Resources">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:xdef.net.Properties.Resources.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:xdef.net.Properties.Resources.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:xdef.net.Properties.Resources.xdef_bridge">
+            <summary>
+              Looks up a localized resource of type System.Byte[].
+            </summary>
+        </member>
+        <member name="F:xdef.net.Sys.Report.STRING">
+            <summary>Text report object (byte value of the character 'S').</summary>
+        </member>
+        <member name="F:xdef.net.Sys.Report.TEXT">
+            <summary>Text report object (byte value of the character 'T').</summary>
+        </member>
+        <member name="F:xdef.net.Sys.Report.AUDIT">
+            <summary>Audit report object (byte value of the character 'A').</summary>
+        </member>
+        <member name="F:xdef.net.Sys.Report.MESSAGE">
+            <summary>Message report object (byte value of the character 'M').</summary>
+        </member>
+        <member name="F:xdef.net.Sys.Report.INFO">
+            <summary>Info report object (byte value of the character 'I').</summary>
+        </member>
+        <member name="F:xdef.net.Sys.Report.WARNING">
+            <summary>Warning report object (byte value of the character 'W').</summary>
+        </member>
+        <member name="F:xdef.net.Sys.Report.LIGHTERROR">
+            <summary>Light error report object (byte value of the character 'L').</summary>
+        </member>
+        <member name="F:xdef.net.Sys.Report.ERROR">
+            <summary>LightError report object (byte value of the character 'E').</summary>
+        </member>
+        <member name="F:xdef.net.Sys.Report.FATAL">
+            <summary>Fatal error report object (byte value of the character 'F').</summary>
+        </member>
+        <member name="F:xdef.net.Sys.Report.EXCEPTION">
+            <summary>Exception report object (byte value of the character 'X').</summary>
+        </member>
+        <member name="F:xdef.net.Sys.Report.TRACE">
+            <summary>Trace report object (byte value of the character 'D').</summary>
+        </member>
+        <member name="F:xdef.net.Sys.Report.KILL">
+            <summary>Kill report object (byte value of the character 'K').</summary>
+        </member>
+        <member name="F:xdef.net.Sys.Report.UNDEF">
+            <summary>Undefined report object (byte value of the character 'U').</summary>
+        </member>
+        <member name="P:xdef.net.Sys.ReportReader.Report">
+            <summary>Get next report from the list or null.</summary>
+            <returns>The report or null.</returns>
+        </member>
+        <member name="M:xdef.net.Sys.ReportReader.Close">
+            <summary>Close the report stream.</summary>
+        </member>
+        <member name="M:xdef.net.Sys.ReportReader.PrintReports(System.IO.Stream)">
+            <summary>Write reports to output stream.</summary>
+            <param name="out">The PrintStream where reports are printed.</param>
+        </member>
+        <member name="M:xdef.net.Sys.ReportReader.PrintReports(System.IO.Stream,System.String)">
+            <summary>Write reports to output stream.</summary>
+            <param name="language">language id (ISO-639).</param>
+            <param name="out">The PrintStream where reports are printed.</param>
+        </member>
+        <member name="M:xdef.net.Sys.ReportReader.PrintToString">
+            <summary>Write reports to String (in actual language).</summary>
+            <returns>the String with reports.</returns>
+        </member>
+        <member name="M:xdef.net.Sys.ReportReader.PrintToString(System.String)">
+            <summary>Write reports to String in specified language.</summary>
+            <param name="language">language id (ISO-639).</param>
+            <returns>the String with reports.</returns>
+        </member>
+        <member name="M:xdef.net.Sys.ReportReader.WriteReports(xdef.net.Sys.ReportWriter)">
+            <summary>Write reports from this reporter reader to report writer.</summary>
+            <param name="reporter">OutputStreamWriter where to write,</param>
+        </member>
+        <member name="P:xdef.net.Sys.ReportWriter.Language">
+            <summary>Language (ISO-639 or ISO-639-2).</summary>
+            <remarks>
+            Set language (ISO-639 or ISO-639-2). This method takes an effect only if
+            the reporter output is printed as a text to the output stream.
+            </remarks>
+            <value name="language">language id (ISO-639).</value>
+        </member>
+        <member name="P:xdef.net.Sys.ReportWriter.LastErrorReport">
+            <summary>Get last error report.</summary>
+            <value>
+            last error report (or <tt>null</tt> if last report is not
+            available).
+            </value>
+        </member>
+        <member name="M:xdef.net.Sys.ReportWriter.ClearLastErrorReport">
+            <summary>Clear last error report.</summary>
+            <remarks>
+            Clear last error report. If last report has been available it will be
+            erased (i.e. result of <tt>getLastReport()</tt> will be null. However,
+            the report has already been written to the report file.
+            </remarks>
+        </member>
+        <member name="M:xdef.net.Sys.ReportWriter.ClearCounters">
+            <summary>Clear counters of fatal errors, errors and warnings.</summary>
+        </member>
+        <member name="M:xdef.net.Sys.ReportWriter.Clear">
+            <summary>Clear the report file.</summary>
+            <remarks>
+            Clear the report file. All report items will be erased from the file.
+            Also last error report is cleared.
+            throws KException if it is not possible to clear reports.
+            </remarks>
+        </member>
+        <member name="P:xdef.net.Sys.ReportWriter.Size">
+            <summary>Get total number of reports.</summary>
+            <remarks>The number of generated reports.</remarks>
+        </member>
+        <member name="P:xdef.net.Sys.ReportWriter.Fatals">
+            <summary>Check if fatal errors were generated.</summary>
+            <remarks>true is errors reports are present.</remarks>
+        </member>
+        <member name="P:xdef.net.Sys.ReportWriter.Errors">
+            <summary>Check if errors and/or fatal errors were generated.</summary>
+            <remarks>true is errors reports are present.</remarks>
+        </member>
+        <member name="P:xdef.net.Sys.ReportWriter.ErrorWarnings">
+            <summary>Check if warnings and/or errors and/or fatal errors were generated.</summary>
+            <remarks>true is warnings or errors reports are present.</remarks>
+        </member>
+        <member name="P:xdef.net.Sys.ReportWriter.FatalErrorCount">
+            <summary>Get number of fatal items.</summary>
+            <remarks>The number of generated fatal errors.</remarks>
+        </member>
+        <member name="P:xdef.net.Sys.ReportWriter.ErrorCount">
+            <summary>Get number of error items.</summary>
+            <remarks>The number of errors.</remarks>
+        </member>
+        <member name="P:xdef.net.Sys.ReportWriter.LightErrorCount">
+            <summary>Get number of light error items.</summary>
+            <remarks>The number of light errors.</remarks>
+        </member>
+        <member name="P:xdef.net.Sys.ReportWriter.WarningCount">
+            <summary>Get number of warning items.</summary>
+            <remarks>The number of generated warnings.</remarks>
+        </member>
+        <member name="P:xdef.net.Sys.ReportWriter.ReportReader">
+            <summary>
+            Closes the reportWriter and creates report reader for reading created
+            report data.
+            </summary>
+            <remarks>
+            Closes the reportWriter and creates report reader for reading created
+            report data. If reader can't be created the SRuntimeException is thrown.
+            </remarks>
+            <returns>report reader created from report writer.</returns>
+        </member>
+        <member name="M:xdef.net.Sys.ReportWriter.Close">
+            <summary>Close report writer.</summary>
+        </member>
+        <member name="M:xdef.net.Sys.ReportWriter.CheckAndThrowErrors">
+            <summary>Check error reports stored in report writer.</summary>
+            <remarks>
+            Check error reports stored in report writer. Return normally if
+            in no errors are found, otherwise throw exception with list of
+            error messages (max. MAX_REPORTS messages).
+            </remarks>
+            <exception cref="T:xdef.net.Sys.SRuntimeException">if errors has been generated.</exception>
+            <exception cref="!:org.xdef.sys.SRuntimeException"/>
+        </member>
+        <member name="M:xdef.net.Sys.ReportWriter.CheckAndThrowErrorWarnings">
+            <summary>Check if error and warning reports were stored in report writer.</summary>
+            <remarks>
+            Check if error and warning reports were stored in report writer. Return
+            normally if in no errors or warnings are found, otherwise throw
+            exception with the  list of error messages (max. MAX_REPORTS messages).
+            </remarks>
+            <exception cref="T:xdef.net.Sys.SRuntimeException">if errors or warnings has been generated.</exception>
+            <exception cref="!:org.xdef.sys.SRuntimeException"/>
+        </member>
+        <member name="M:xdef.net.Sys.ReportWriter.AddReports(xdef.net.Sys.ReportReader)">
+            <summary>Add to this reporter reports from report reader.</summary>
+            <param name="reporter">report reader with reports to be added.</param>
+        </member>
+        <member name="F:xdef.net.XDConstants.XDPROPERTY_DEBUG">
+            <summary>Property defines debug mode (default is false).</summary>
+        </member>
+        <member name="F:xdef.net.XDConstants.XDPROPERTYVALUE_DEBUG_TRUE">
+            <summary>Value "true" of property "xdef_debug"</summary>
+        </member>
+        <member name="F:xdef.net.XDConstants.XDPROPERTYVALUE_DEBUG_FALSE">
+            <summary>Value "false" of property "xdef_debug"</summary>
+        </member>
+        <member name="F:xdef.net.XDConstants.XDPROPERTYVALUE_DEBUG_SHOWRESULT">
+            <summary>Value "showResult" of property "xdef_debug"</summary>
+        </member>
+        <member name="F:xdef.net.XDConstants.XDPROPERTY_DEBUG_OUT">
+            <summary>Property defines stream used for debug output (default is stdOut).</summary>
+        </member>
+        <member name="F:xdef.net.XDConstants.XDPROPERTY_DEBUG_IN">
+            <summary>Property defines stream used for debug input (default is stdIn).</summary>
+        </member>
+        <member name="F:xdef.net.XDConstants.XDPROPERTY_DEBUG_EDITOR">
+            <summary>Property defines debug editor class name.</summary>
+        </member>
+        <member name="F:xdef.net.XDConstants.XDPROPERTY_XDEF_EDITOR">
+            <summary>Property defines X-definition editor class name.</summary>
+        </member>
+        <member name="F:xdef.net.XDConstants.XDPROPERTY_XDEF_EXTEDITOR">
+            <summary>Property defines X-definition external editor class name.</summary>
+        </member>
+        <member name="F:xdef.net.XDConstants.XDPROPERTY_DOCTYPE">
+            <summary>Property defines if XML DOCTYPE is permitted (default is "true").</summary>
+        </member>
+        <member name="F:xdef.net.XDConstants.XDPROPERTYVALUE_DOCTYPE_FALSE">
+            <summary>Value "false" of property "xdef_doctype"</summary>
+        </member>
+        <member name="F:xdef.net.XDConstants.XDPROPERTYVALUE_DOCTYPE_TRUE">
+            <summary>Value "true" of property "xdef_doctype"</summary>
+        </member>
+        <member name="F:xdef.net.XDConstants.XDPROPERTY_LOCATIONDETAILS">
+            <summary>Set the XML parser will generate detailed location in reports.</summary>
+        </member>
+        <member name="F:xdef.net.XDConstants.XDPROPERTYVALUE_LOCATIONDETAILS_FALSE">
+            <summary>Value "false" of property "xdef_locationsdetails" (default).</summary>
+        </member>
+        <member name="F:xdef.net.XDConstants.XDPROPERTYVALUE_LOCATIONDETAILS_TRUE">
+            <summary>Value "true" of property "xdef_locationsdetails"</summary>
+        </member>
+        <member name="F:xdef.net.XDConstants.XDPROPERTY_XINCLUDE">
+            <summary>Property defines if XML include is permitted (default is "true").</summary>
+        </member>
+        <member name="F:xdef.net.XDConstants.XDPROPERTYVALUE_XINCLUDE_FALSE">
+            <summary>Value "false" of property "xdef_xinclude"</summary>
+        </member>
+        <member name="F:xdef.net.XDConstants.XDPROPERTYVALUE_XINCLUDE_TRUE">
+            <summary>Value "true" of property "xdef_xinclude (default)."</summary>
+        </member>
+        <member name="F:xdef.net.XDConstants.XDPROPERTY_WARNINGS">
+            <summary>Property warning messages are checked {thrown} (default is "false")</summary>
+        </member>
+        <member name="F:xdef.net.XDConstants.XDPROPERTYVALUE_WARNINGS_TRUE">
+            <summary>Value "true" of property "xdef_warnings"</summary>
+        </member>
+        <member name="F:xdef.net.XDConstants.XDPROPERTYVALUE_WARNINGS_FALSE">
+            <summary>Value "false" of property "xdef_warnings"</summary>
+        </member>
+        <member name="F:xdef.net.XDConstants.XDPROPERTY_DISPLAY">
+            <summary>Property defines debug mode (default is false).</summary>
+        </member>
+        <member name="F:xdef.net.XDConstants.XDPROPERTYVALUE_DISPLAY_TRUE">
+            <summary>Value "true" of property "xdef_display"</summary>
+        </member>
+        <member name="F:xdef.net.XDConstants.XDPROPERTYVALUE_DISPLAY_ERRORS">
+            <summary>Value "errors" of property "xdef_display"</summary>
+        </member>
+        <member name="F:xdef.net.XDConstants.XDPROPERTYVALUE_DISPLAY_FALSE">
+            <summary>Value "false" of property "xdef_display"</summary>
+        </member>
+        <member name="F:xdef.net.XDConstants.XDPROPERTY_MINYEAR">
+            <summary>Property defines minimal valid year of date (default is no minimum).</summary>
+        </member>
+        <member name="F:xdef.net.XDConstants.XDPROPERTY_MAXYEAR">
+            <summary>Property defines maximal valid year of date (default is no maximum).</summary>
+        </member>
+        <member name="F:xdef.net.XDConstants.XDPROPERTY_SPECDATES">
+            <summary>Property defines legal values of dates if year is out of range.</summary>
+        </member>
+        <member name="F:xdef.net.XDConstants.XDPROPERTY_IGNORE_UNDEF_EXT">
+            <summary>
+            Property defines if unresolved external methods are reported (used
+            for syntax checking of X-definition (default is "false").
+            </summary>
+        </member>
+        <member name="F:xdef.net.XDConstants.XDPROPERTYVALUE_IGNORE_UNDEF_EXT_TRUE">
+            <summary>Value "true" of property "xdef_ignoreUnresolvedExternals"</summary>
+        </member>
+        <member name="F:xdef.net.XDConstants.XDPROPERTYVALUE_IGNORE_UNDEF_EXT_FALSE">
+            <summary>Value "false" of property "xdef_ignoreUnresolvedExternals"</summary>
+        </member>
+        <member name="F:xdef.net.XDConstants.XDPROPERTY_MESSAGES">
+            <summary>Prefix of property names for setting of message table files.</summary>
+        </member>
+        <member name="F:xdef.net.XDConstants.XDPROPERTY_MSGLANGUAGE">
+            <summary>Name of property for setting language of messages.</summary>
+        </member>
+        <member name="F:xdef.net.XDConstants.XLINK_NS_URI">
+            <summary>URI of w3c XLink</summary>
+        </member>
+        <member name="F:xdef.net.XDConstants.XINCLUDE_NS_URI">
+            <summary>URI of w3c XInclude</summary>
+        </member>
+        <member name="F:xdef.net.XDConstants.XDEF_NS_PREFIX">
+            <summary>Recommended namespace prefix used for X-definition nodes.</summary>
+        </member>
+        <member name="F:xdef.net.XDConstants.XDEF20_NS_URI">
+            <summary>URI of X-definition 2.0.</summary>
+        </member>
+        <member name="F:xdef.net.XDConstants.XDEF31_NS_URI">
+            <summary>URI of X-definition 3.1.</summary>
+        </member>
+        <member name="F:xdef.net.XDConstants.XDEF32_NS_URI">
+            <summary>URI of X-definition 3.2.</summary>
+        </member>
+        <member name="F:xdef.net.XDConstants.XDEF40_NS_URI">
+            <summary>URI of X-definition 4.0.</summary>
+        </member>
+        <member name="F:xdef.net.XDConstants.XDEF_INSTANCE_NS_URI">
+            <summary>The namespace URI for X-definition instance.</summary>
+        </member>
+        <member name="F:xdef.net.XDConstants.JSON_NS_PREFIX">
+            <summary>Recommended namespace prefix used for JSON/XML conversion nodes.</summary>
+        </member>
+        <member name="F:xdef.net.XDConstants.JSON_NS_URI">
+            <summary>URI of JSON/XML X-definition conversion.</summary>
+        </member>
+        <member name="F:xdef.net.XDConstants.JSON_NS_URI_W3C">
+            <summary>URI of JSON/XML W3C conversion (https://www.w3.org/TR/xslt-30/#json).</summary>
+        </member>
+        <member name="F:xdef.net.XDConstants.LINE_SEPARATOR">
+            <summary>Platform-dependent line separator (newline characters: LF, CR LF, etc.</summary>
+        </member>
+        <member name="M:xdef.net.XDFactory.GetXDVersion">
+            <summary>Get version of this implementation of X-definition.</summary>
+            <returns>version of this implementation of X-definition.</returns>
+        </member>
+        <member name="M:xdef.net.XDFactory.GetXDBuilder(xdef.net.Utils.Properties)">
+            <summary>Creates instance of XDBuilder with properties.</summary>
+            <param name="props">
+            Properties or null -
+            see
+            <see cref="T:xdef.net.XDConstants"/>
+            .
+            </param>
+            <returns>created XDBuilder.</returns>
+        </member>
+        <member name="M:xdef.net.XDFactory.GetXDBuilder(xdef.net.Sys.ReportWriter,xdef.net.Utils.Properties)">
+            <summary>Creates instance of XDBuilder with properties.</summary>
+            <param name="reporter">the ReportWriter to be used for error reporting.</param>
+            <param name="props">
+            Properties or <tt>null</tt> -
+            see
+            <see cref="T:xdef.net.XDConstants"/>
+            .
+            </param>
+            <returns>created XDBuilder.</returns>
+        </member>
+        <member name="M:xdef.net.XDFactory.CompileXD(xdef.net.Utils.Properties,System.Collections.Generic.IEnumerable{System.String})">
+            <summary>Compile XDPool from sources.</summary>
+            <param name="props">Properties or <tt>null</tt>.</param>
+            <param name="parameters">list of strings with X-definition file names.</param>
+            <returns>generated XDPool.</returns>
+            <exception cref="T:xdef.net.Connection.RemoteCallException">if an error occurs.</exception>
+        </member>
+        <member name="M:xdef.net.XDFactory.CompileXD(xdef.net.Utils.Properties,System.Collections.Generic.IEnumerable{System.Uri})">
+            <summary>Compile XDPool from URLs.</summary>
+            <param name="props">Properties or <tt>null</tt>.</param>
+            <param name="parameters">list of URLs with X-definition sources.</param>
+            <returns>generated XDPool.</returns>
+            <exception cref="T:xdef.net.Connection.RemoteCallException">if an error occurs.</exception>
+        </member>
+        <member name="M:xdef.net.XDFactory.CompileXD(xdef.net.Utils.Properties,System.Collections.Generic.IEnumerable{xdef.net.Utils.FilePath})">
+            <summary>Compile XDPool from InputStreams.</summary>
+            <param name="props">Properties or <tt>null</tt>.</param>
+            <param name="parameters">list of files with X-definition sources.</param>
+            <returns>generated XDPool.</returns>
+            <exception cref="!:org.xdef.sys.SRuntimeException">if an error occurs.</exception>
+        </member>
+        <member name="M:xdef.net.XDFactory.CompileXD(xdef.net.Utils.Properties,System.Collections.Generic.IEnumerable{System.IO.Stream})">
+            <summary>Compile XDPool from InputStreams.</summary>
+            <param name="props">Properties or <tt>null</tt>.</param>
+            <param name="parameters">list of files with X-definition sources.</param>
+            <returns>generated XDPool.</returns>
+            <exception cref="T:xdef.net.Connection.RemoteCallException">if an error occurs.</exception>
+        </member>
+        <member name="M:xdef.net.XDFactory.CompileXD(xdef.net.Utils.Properties,System.Collections.Generic.IEnumerable{System.Object},System.Collections.Generic.IEnumerable{System.String})">
+            <summary>Compile XDPool from sources and assign the sourceId to each source.</summary>
+            <param name="props">Properties or <tt>null</tt>.</param>
+            <param name="sources">
+            array with source data with X-definitions source data.
+            (The type of items can only be either the InputStreams or the String
+            containing an XML document).
+            </param>
+            <param name="sourceIds">
+            array with sourceIds (corresponding to the items
+            in the argument sources).
+            </param>
+            <returns>generated XDPool.</returns>
+            <exception cref="T:xdef.net.Connection.RemoteCallException">if an error occurs.</exception>
+        </member>
+        <member name="M:xdef.net.XDFactory.CompileXD(xdef.net.Utils.Properties,System.Object[])">
+            <summary>Compile XDPool from source.</summary>
+            <param name="props">Properties or <tt>null</tt>.</param>
+            <param name="parameters">list of sources, source pairs or external classes.</param>
+            <returns>generated XDPool.</returns>
+            <exception cref="T:xdef.net.Connection.RemoteCallException">if an error occurs.</exception>
+        </member>
+        <member name="M:xdef.net.XDFactory.CompileXD(xdef.net.Sys.ReportWriter,xdef.net.Utils.Properties,System.Object[])">
+            <summary>Compile XDPool from source.</summary>
+            <param name="reporter">the ReportWriter to be used for error reporting.</param>
+            <param name="props">Properties or <tt>null</tt>.</param>
+            <param name="parameters">list of sources, source pairs or external classes.</param>
+            <returns>generated XDPool.</returns>
+            <exception cref="T:xdef.net.Connection.RemoteCallException">if an error occurs.</exception>
+        </member>
+        <member name="M:xdef.net.XDFactory.Xparse(System.IO.Stream,xdef.net.Sys.ReportWriter)">
+            <summary>Parse XML with X-definition declared in source input stream.</summary>
+            <param name="source">where to read XML.</param>
+            <param name="reporter">used for error messages or <tt>null</tt>.</param>
+            <returns>created XDDocument object.</returns>
+            <exception cref="T:xdef.net.Connection.RemoteCallException">if an error occurs.</exception>
+        </member>
+        <member name="M:xdef.net.XDFactory.Xparse(System.String,xdef.net.Sys.ReportWriter)">
+            <summary>Parse XML with X-definition declared in source.</summary>
+            <param name="source">URL, pathname direct to XML or direct XML.</param>
+            <param name="reporter">used for error messages or <tt>null</tt>.</param>
+            <returns>created XDDocument object.</returns>
+            <exception cref="!:org.xdef.sys.SRuntimeException">if an error occurs.</exception>
+        </member>
+        <member name="M:xdef.net.XDFactory.CreateXDInput(System.IO.Stream,System.Boolean)">
+            <summary>Creates XDInput from InputStream.</summary>
+            <param name="value">the stream.</param>
+            <param name="xmlFormat">
+            if <tt>true</tt> the input data are in XML format,
+            otherwise in string format.
+            </param>
+            <returns>the XDInput object.</returns>
+        </member>
+        <member name="M:xdef.net.XDFactory.CreateXDInput(System.IO.StreamReader,System.Boolean)">
+            <summary>Creates XDInput from InputStream.</summary>
+            <param name="value">the stream.</param>
+            <param name="xmlFormat">
+            if <tt>true</tt> the input data are in XML format,
+            otherwise in string format.
+            </param>
+            <returns>the XDInput object.</returns>
+        </member>
+        <member name="M:xdef.net.XDFactory.CreateXDInput(xdef.net.Sys.ReportReader)">
+            <summary>Creates XDInput from InputStream.</summary>
+            <param name="value">ReportReader.</param>
+            <returns>the XDInput object.</returns>
+        </member>
+        <member name="M:xdef.net.XDFactory.CreateXDOutput(xdef.net.Sys.ReportWriter)">
+            <summary>Creates XDOutput from reporter.</summary>
+            <param name="value">the reporter.</param>
+            <returns>the XDOutput object.</returns>
+        </member>
+        <member name="M:xdef.net.XDFactory.CreateXDOutput(System.IO.Stream,System.Boolean)">
+            <summary>Creates XDOutput from Stream.</summary>
+            <param name="value">Writer object.</param>
+            <param name="xmlFormat">
+            if <tt>true</tt> the output will be in XML format,
+            otherwise in string format.
+            </param>
+            <returns>the XDOutput object.</returns>
+        </member>
+        <member name="M:xdef.net.XDFactory.CreateXDElement(System.Xml.Linq.XElement)">
+            <summary>Creates XDElement from System.XML.Linq.XElement</summary>
+            <param name="el">System.XML.Linq.XElement</param>
+            <returns>XDElement object.</returns>
+        </member>
+        <member name="M:xdef.net.XDFactory.CreateSQLService(System.String,System.String,System.String)">
+            <summary>Creates XDService object with JDBC support.</summary>
+            <param name="url">string with connection URL.</param>
+            <param name="user">user name.</param>
+            <param name="passw">password.</param>
+            <returns>XDService object.</returns>
+            <exception cref="T:xdef.net.Connection.RemoteCallException">if an error occurs.</exception>
+        </member>
+        <member name="M:xdef.net.XDFactory.WriteXDPool(System.IO.Stream,xdef.net.XDPool)">
+            <summary>
+            Writes XDPool to provided stream.
+            </summary>
+            <param name="stream">Target stream.</param>
+            <param name="pool">Pool to write</param>
+        </member>
+        <member name="M:xdef.net.XDFactory.WriteXDPool(xdef.net.Utils.FilePath,xdef.net.XDPool)">
+            <summary>
+            Writes XDPool to given file.
+            </summary>
+            <param name="path">Filepath to write pool.</param>
+            <param name="pool">Pool to write.</param>
+        </member>
+        <member name="M:xdef.net.XDFactory.WriteXDPool(System.String,xdef.net.XDPool)">
+            <summary>
+            Writes XDPool to specified path.
+            </summary>
+            <param name="path">String path to file.</param>
+            <param name="pool">Pool to write</param>
+        </member>
+        <member name="M:xdef.net.XDFactory.ReadXDPool(System.IO.Stream)">
+            <summary>
+            Reads XDPool from stream.
+            </summary>
+            <param name="stream">Stream to read from.</param>
+            <returns>XDPool object.</returns>
+        </member>
+        <member name="M:xdef.net.XDFactory.ReadXDPool(xdef.net.Utils.FilePath)">
+            <summary>
+            Reads XDPool from specified file.
+            </summary>
+            <param name="file">Path to file with XDPool.</param>
+            <returns>XDPool object.</returns>
+        </member>
+        <member name="M:xdef.net.XDFactory.ReadXDPool(System.String)">
+            <summary>
+            Reads XDPool from specified file.
+            </summary>
+            <param name="filePath">String path to file with XDPool.</param>
+            <returns>XDPool object.</returns>
+        </member>
+        <member name="M:xdef.net.XDFactory.ReadXDPool(System.Uri)">
+            <summary>
+            Reads XDPool from specified URL
+            </summary>
+            <param name="url">Url from which to read XDPool.</param>
+            <returns>XDPool object.</returns>
+        </member>
+    </members>
+</doc>
