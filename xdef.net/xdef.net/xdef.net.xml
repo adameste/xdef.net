@@ -360,28 +360,28 @@
             </param>
             <returns>created XDBuilder.</returns>
         </member>
-        <member name="M:xdef.net.XDFactory.CompileXD(xdef.net.Utils.Properties,System.Collections.Generic.IEnumerable{System.String})">
+        <member name="M:xdef.net.XDFactory.CompileXD(xdef.net.Utils.Properties,System.String[])">
             <summary>Compile XDPool from sources.</summary>
             <param name="props">Properties or <tt>null</tt>.</param>
             <param name="parameters">list of strings with X-definition file names.</param>
             <returns>generated XDPool.</returns>
             <exception cref="T:xdef.net.Connection.RemoteCallException">if an error occurs.</exception>
         </member>
-        <member name="M:xdef.net.XDFactory.CompileXD(xdef.net.Utils.Properties,System.Collections.Generic.IEnumerable{System.Uri})">
+        <member name="M:xdef.net.XDFactory.CompileXD(xdef.net.Utils.Properties,System.Uri[])">
             <summary>Compile XDPool from URLs.</summary>
             <param name="props">Properties or <tt>null</tt>.</param>
             <param name="parameters">list of URLs with X-definition sources.</param>
             <returns>generated XDPool.</returns>
             <exception cref="T:xdef.net.Connection.RemoteCallException">if an error occurs.</exception>
         </member>
-        <member name="M:xdef.net.XDFactory.CompileXD(xdef.net.Utils.Properties,System.Collections.Generic.IEnumerable{xdef.net.Utils.FilePath})">
+        <member name="M:xdef.net.XDFactory.CompileXD(xdef.net.Utils.Properties,xdef.net.Utils.FilePath[])">
             <summary>Compile XDPool from InputStreams.</summary>
             <param name="props">Properties or <tt>null</tt>.</param>
             <param name="parameters">list of files with X-definition sources.</param>
             <returns>generated XDPool.</returns>
             <exception cref="!:org.xdef.sys.SRuntimeException">if an error occurs.</exception>
         </member>
-        <member name="M:xdef.net.XDFactory.CompileXD(xdef.net.Utils.Properties,System.Collections.Generic.IEnumerable{System.IO.Stream})">
+        <member name="M:xdef.net.XDFactory.CompileXD(xdef.net.Utils.Properties,System.IO.Stream[])">
             <summary>Compile XDPool from InputStreams.</summary>
             <param name="props">Properties or <tt>null</tt>.</param>
             <param name="parameters">list of files with X-definition sources.</param>
@@ -410,9 +410,9 @@
             <returns>generated XDPool.</returns>
             <exception cref="T:xdef.net.Connection.RemoteCallException">if an error occurs.</exception>
         </member>
-        <member name="M:xdef.net.XDFactory.CompileXD(xdef.net.Sys.ReportWriter,xdef.net.Utils.Properties,System.Object[])">
+        <member name="M:xdef.net.XDFactory.CompileXD(xdef.net.Sys.ArrayReporter,xdef.net.Utils.Properties,System.Object[])">
             <summary>Compile XDPool from source.</summary>
-            <param name="reporter">the ReportWriter to be used for error reporting.</param>
+            <param name="reporter">the ReportWriter to be used for error reporting. Only array reporter supported due to bug in original library.</param>
             <param name="props">Properties or <tt>null</tt>.</param>
             <param name="parameters">list of sources, source pairs or external classes.</param>
             <returns>generated XDPool.</returns>

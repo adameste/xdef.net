@@ -21,6 +21,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="D\**" />
+    <EmbeddedResource Remove="D\**" />
+    <None Remove="D\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="Resources\xdef.bridge.jar" />
   </ItemGroup>
 

@@ -11,8 +11,9 @@ using xdef.net.Utils;
 
 namespace xdef.net.test
 {
-    [TestClass]
-    public class UnitTest1
+    // [TestClass]
+    // Dont run, slow
+    public class SpeedTest
     {
 
         [TestInitialize]

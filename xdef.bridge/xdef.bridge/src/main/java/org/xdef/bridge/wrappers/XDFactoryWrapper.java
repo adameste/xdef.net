@@ -26,6 +26,8 @@ import org.xdef.bridge.utils.BinaryDataReader;
 import org.xdef.bridge.wrappers.streams.RemoteInputStream;
 import org.xdef.bridge.wrappers.streams.RemoteOutputStream;
 import org.xdef.bridge.wrappers.streams.RemoteStreamWrapper;
+import org.xdef.bridge.wrappers.sys.ArrayReporterWrapper;
+import org.xdef.bridge.wrappers.sys.ReporterWrapper;
 import org.xdef.impl.XBuilder;
 import org.xdef.sys.ReportReader;
 import org.xdef.sys.ReportWriter;
@@ -198,7 +200,7 @@ public class XDFactoryWrapper extends RemoteHandlingObject {
     //  public static org.xdef.XDBuilder getXDBuilder(org.xdef.sys.ReportWriter, java.util.Properties);
     private Response getXDBuilder2 (BinaryDataReader reader) throws IOException
     {
-        ReportWriter rw = (ReportWriter) client.getLocalObject(reader.readInt());
+        ReportWriter rw = (ReportWriter) ((Object)client.getLocalObject(reader.readInt()));
         Properties props = readProperties(reader);
         XDBuilder res = XDFactory.getXDBuilder(rw, props);
         XDBuilderWrapper wrap =  new XDBuilderWrapper(client, res);
@@ -307,10 +309,10 @@ public class XDFactoryWrapper extends RemoteHandlingObject {
     //  public static org.xdef.XDPool compileXD(org.xdef.sys.ReportWriter, java.util.Properties, java.lang.Object...) throws org.xdef.sys.SRuntimeException;
     private Response compileXD7 (BinaryDataReader reader) throws IOException
     {
-        ReportWriter rw = (ReportWriter) client.getLocalObject(reader.readInt());
+        ArrayReporterWrapper rw = (ArrayReporterWrapper) client.getLocalObject(reader.readInt());
         Properties props = readProperties(reader);
         Object[] sources = readObjectArgs(reader);
-        XDPool pool = XDFactory.compileXD(rw, props, sources);
+        XDPool pool = XDFactory.compileXD(rw.getArrayReporter(), props, sources);
         XDPoolWrapper wrap = new XDPoolWrapper(client, pool);
         BinaryDataBuilder builder = new BinaryDataBuilder();
         builder.add(client.registerRemoteObject(wrap));
