@@ -8,6 +8,7 @@ namespace xdef.net.Sys
 {
     public sealed class ArrayReporter : Reporter
     {
+        private int _v;
 
         public ArrayReporter() 
         {
@@ -18,6 +19,10 @@ namespace xdef.net.Sys
             _reportWriterWrapper = new ReportWriterWrapper(_client, ObjectId);
         }
 
-        
+        internal ArrayReporter(int objectId, Client client)
+        {
+            ObjectId = objectId;
+            _client = client;
+        }
     }
 }

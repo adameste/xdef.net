@@ -4,7 +4,7 @@ using System.Text;
 
 namespace xdef.net.Connection
 {
-    class RemoteCallException : Exception
+    public class RemoteCallException : Exception
     {
         public int ErrorCode { get; }
 

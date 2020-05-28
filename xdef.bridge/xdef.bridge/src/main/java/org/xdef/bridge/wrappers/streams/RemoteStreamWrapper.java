@@ -29,7 +29,7 @@ public class RemoteStreamWrapper extends RemoteObject {
     }
 
     public void close() {
-        sendRequest(new Request(FUNCTION_CLOSE, null));
+        sendRequestWithResponse(new Request(FUNCTION_CLOSE, null));
     }
 
     public synchronized int read(byte[] buf, int offset, int len) {
@@ -51,7 +51,7 @@ public class RemoteStreamWrapper extends RemoteObject {
         BinaryDataBuilder builder = new BinaryDataBuilder()
                 .add(len)
                 .add(buf, offset, len);
-        sendRequest(new Request(FUNCTION_WRITE, builder.build()));
+        sendRequestWithResponse(new Request(FUNCTION_WRITE, builder.build()));
     }
 
 }

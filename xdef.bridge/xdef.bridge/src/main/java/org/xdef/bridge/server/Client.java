@@ -58,8 +58,8 @@ public abstract class Client {
         } catch (InterruptedException e) {
             return null;
         }
-        if (ResponseException.isException(request)) {
-            RemoteCallException ex = ResponseException.getException(request);
+        if (ResponseException.isException(waiter.getResponse())) {
+            RemoteCallException ex = ResponseException.getException(waiter.getResponse());
             System.err.println("Remote call exception thrown code: " + ex.getErrorCode() + " message: " + ex.getMessage());
         }
         return waiter.getResponse();

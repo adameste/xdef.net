@@ -39,6 +39,7 @@ public class RemoteOutputStream extends OutputStream {
     }
 
     public RemoteOutputStream(RemoteStreamWrapper streamWrapper, int size) {
+        this.streamWrapper = streamWrapper;
         buf = new byte[size];
     }
 

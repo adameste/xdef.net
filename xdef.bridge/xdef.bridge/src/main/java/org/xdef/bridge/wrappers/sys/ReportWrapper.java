@@ -852,4 +852,8 @@ public class ReportWrapper extends RemoteHandlingObject {
         // return new Response(builder.build());
     }
 
+    public Report getReport() {
+        return report;
+    }
+
 }

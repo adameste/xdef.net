@@ -1,8 +1,10 @@
 package org.xdef.bridge.utils;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringReader;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Properties;
@@ -13,6 +15,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
 public class BinaryDataReader extends CustomDataInputStream {
@@ -61,7 +64,7 @@ public class BinaryDataReader extends CustomDataInputStream {
         String xml = this.readSharpString();
         try {
             DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-            return documentBuilder.parse(xml).getDocumentElement();
+            return documentBuilder.parse(new ByteArrayInputStream(xml.getBytes())).getDocumentElement();
         } catch (ParserConfigurationException | SAXException e) {
             throw new IOException(e.getMessage());
         }

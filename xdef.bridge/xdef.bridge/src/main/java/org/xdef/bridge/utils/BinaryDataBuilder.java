@@ -85,10 +85,14 @@ public class BinaryDataBuilder {
     }
 
     public BinaryDataBuilder add(Properties props) {
-        Set<String> names = props.stringPropertyNames();
-        add(names.size());
-        for (String name : names) {
-            add(name).add(props.getProperty(name));
+        if (props == null) {
+            add(0);
+        } else {
+            Set<String> names = props.stringPropertyNames();
+            add(names.size());
+            for (String name : names) {
+                add(name).add(props.getProperty(name));
+            }
         }
         return this;
     }

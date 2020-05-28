@@ -14,7 +14,7 @@ import org.xdef.sys.ReportReader;
 import org.xdef.sys.ReportWriter;
 import org.xdef.sys.SRuntimeException;
 
-public class ReportWriterWrapper {
+public class ReportWriterWrapper extends RemoteHandlingObject {
 
     private final static int FUNCTION_WRITER_LANGUAGE = 1001;
     private final static int FUNCTION_WRITER_LAST_ERROR_REPORT = 1002;
@@ -35,55 +35,67 @@ public class ReportWriterWrapper {
     private final static int FUNCTION_WRITER_CLOSE = 1017;
 
     private final ReportWriter reportWriter;
+    private final boolean suppressDeleteObject;
     private Client client;
 
-    public ReportWriterWrapper(Client client, ReportWriter writer) {
-        this.client = client;
-        this.reportWriter = writer;
+    public ReportWriterWrapper(Client client, ReportWriter reportWriter) {
+        this(client, reportWriter, false);
+    }
+
+    public ReportWriterWrapper(Client client, ReportWriter reportWriter, boolean suppressDeleteObject) {
+        super(client);
+        this.reportWriter = reportWriter;
+        this.suppressDeleteObject = suppressDeleteObject;
+    }
+
+    @Override
+    protected void deleteRemoteObject() {
+        if (!suppressDeleteObject)
+            super.deleteRemoteObject();
     }
 
     public Response handleRequest(Request request) {
         BinaryDataReader reader = request.getReader();
-        try
-        {
-        switch (request.getFunction()) {
-            case FUNCTION_WRITER_LANGUAGE:
-                return setLanguage(reader);
-            case FUNCTION_WRITER_LAST_ERROR_REPORT:
-                return getLastErrorReport(reader);
-            case FUNCTION_WRITER_SIZE:
-                return getSize(reader);
-            case FUNCTION_WRITER_FATALS:
-                return getFatals(reader);
-            case FUNCTION_WRITER_ERRORS:
-                return getErrors(reader);
-            case FUNCTION_WRITER_ERRORWARNINGS:
-                return getErrorWarnings(reader);
-            case FUNCTION_WRITER_FATAL_COUNT:
-                return getWriterFatalCount(reader);
-            case FUNCTION_WRITER_ERROR_COUNT:
-                return getFunctionWriterErrorCount(reader);
-            case FUNCTION_WRITER_LIGHT_ERROR_COUNT:
-                return getWriterLightErrorCount(reader);
-            case FUNCTION_WRITER_WARNING_COUNT:
-                return getWarningCount(reader);
-            case FUNCTION_WRITER_ADD_REPORTS:
-                return addReports(reader);
-            case FUNCTION_WRITER_CHECK_AND_THROW_ERRORS:
-                return checkAndThrowErrors(reader);
-            case FUNCTION_WRITER_CHECK_AND_THROW_ERROR_WARNINGS:
-                return checkAndThrowErrorWarnings(reader);
-            case FUNCTION_WRITER_CLEAR:
-                return clear(reader);
-            case FUNCTION_WRITER_CLEAR_COUNTERS:
-                return clearCounters(reader);
-            case FUNCTION_WRITER_CLEAR_LAST_ERROR_REPORT:
-                return clearLastErrorReport(reader);
-            case FUNCTION_WRITER_CLOSE:
-                return close(reader);
-            default:
-                return new ResponseException(ResponseException.ERROR_CODE_UNKNOWN_FUNCTION, "ReportWriter unknown function.");
-        }
+        try {
+            switch (request.getFunction()) {
+                case FUNCTION_WRITER_LANGUAGE:
+                    return setLanguage(reader);
+                case FUNCTION_WRITER_LAST_ERROR_REPORT:
+                    return getLastErrorReport(reader);
+                case FUNCTION_WRITER_SIZE:
+                    return getSize(reader);
+                case FUNCTION_WRITER_FATALS:
+                    return getFatals(reader);
+                case FUNCTION_WRITER_ERRORS:
+                    return getErrors(reader);
+                case FUNCTION_WRITER_ERRORWARNINGS:
+                    return getErrorWarnings(reader);
+                case FUNCTION_WRITER_FATAL_COUNT:
+                    return getWriterFatalCount(reader);
+                case FUNCTION_WRITER_ERROR_COUNT:
+                    return getFunctionWriterErrorCount(reader);
+                case FUNCTION_WRITER_LIGHT_ERROR_COUNT:
+                    return getWriterLightErrorCount(reader);
+                case FUNCTION_WRITER_WARNING_COUNT:
+                    return getWarningCount(reader);
+                case FUNCTION_WRITER_ADD_REPORTS:
+                    return addReports(reader);
+                case FUNCTION_WRITER_CHECK_AND_THROW_ERRORS:
+                    return checkAndThrowErrors(reader);
+                case FUNCTION_WRITER_CHECK_AND_THROW_ERROR_WARNINGS:
+                    return checkAndThrowErrorWarnings(reader);
+                case FUNCTION_WRITER_CLEAR:
+                    return clear(reader);
+                case FUNCTION_WRITER_CLEAR_COUNTERS:
+                    return clearCounters(reader);
+                case FUNCTION_WRITER_CLEAR_LAST_ERROR_REPORT:
+                    return clearLastErrorReport(reader);
+                case FUNCTION_WRITER_CLOSE:
+                    return close(reader);
+                default:
+                    return new ResponseException(ResponseException.ERROR_CODE_UNKNOWN_FUNCTION,
+                            "ReportWriter unknown function.");
+            }
         } catch (Exception ex) {
             return new ResponseException(ResponseException.ERROR_CODE_INVALID_REQUEST, "ReportWriter invalid request.");
         }
@@ -150,27 +162,23 @@ public class ReportWriterWrapper {
     }
 
     private Response checkAndThrowErrors(BinaryDataReader reader) {
-        try
-        {
+        try {
             reportWriter.checkAndThrowErrors();
             return new EmptyResponse();
-        } catch (SRuntimeException ex)
-        {
+        } catch (SRuntimeException ex) {
             return new Response(new BinaryDataBuilder().add(ex.getMessage()).build());
         }
     }
 
     private Response checkAndThrowErrorWarnings(BinaryDataReader reader) {
-        try
-        {
+        try {
             reportWriter.checkAndThrowErrorWarnings();
             return new EmptyResponse();
-        } catch (SRuntimeException ex)
-        {
+        } catch (SRuntimeException ex) {
             return new Response(new BinaryDataBuilder().add(ex.getMessage()).build());
         }
     }
-    
+
     private Response clear(BinaryDataReader reader) {
         reportWriter.clear();
         return new EmptyResponse();
@@ -190,7 +198,5 @@ public class ReportWriterWrapper {
         reportWriter.close();
         return new EmptyResponse();
     }
-
-    
 
 }

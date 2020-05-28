@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection.PortableExecutable;
+using System.Security.Authentication.ExtendedProtection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Schema;
@@ -17,12 +18,14 @@ namespace xdef.net.test
     public class TestXDFactory
     {
         private MockServer _mockServer;
+        private FilePath _filePath;
 
         [TestInitialize]
         public void Initialize()
         {
             XD.StartProcess = TestConfig.StartProcess;
             _mockServer = new MockServer(3333, "", (req, res, prm) => File.ReadAllText("xdefs/02.xdef"));
+            _filePath = new FilePath("xdefs/02.xdef");
         }
 
         [TestCleanup]
@@ -60,13 +63,38 @@ namespace xdef.net.test
         }
 
         [TestMethod]
-        public async Task TestGetBuilder()
+        public void TestGetBuilder()
         {
             var reporter = new ArrayReporter();
             var b1 = XD.Factory.GetXDBuilder(reporter, null);
             var b2 = XD.Factory.GetXDBuilder(null);
             Assert.IsNotNull(b1);
             Assert.IsNotNull(b2);
+        }
+
+        [TestMethod]
+        public void TestReadWriteXDPool()
+        {
+            var pool = XD.Factory.CompileXD(null, _filePath);
+            var tmp = Path.GetTempFileName();
+            XD.Factory.WriteXDPool(tmp, pool);
+            byte[] streamData;
+            using var stream = new MemoryStream();
+            XD.Factory.WriteXDPool(stream, pool);
+            streamData = stream.ToArray();
+            var fileData = File.ReadAllBytes(tmp);
+            Assert.IsTrue(streamData.SequenceEqual(fileData));
+            var p1 = XD.Factory.ReadXDPool(tmp);
+            using var s2 = new MemoryStream(streamData);
+            var p2 = XD.Factory.ReadXDPool(s2);
+            Assert.IsNotNull(p1);
+            Assert.IsNotNull(p2);
+        }
+        [TestMethod]
+        public void TestGetVersion()
+        {
+            var version = XD.Factory.GetXDVersion();
+            Assert.IsNotNull(version);
         }
     }
 }

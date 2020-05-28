@@ -1,0 +1,19 @@
+﻿<xd:def xmlns:xd="http://www.xdef.org/xdef/4.0" name="Example" root="A" >
+  <A>
+    <B>
+      <C> create "Generated today message"; </C>
+    </B>
+    <D>
+      <E>
+        create "Hello! Today is " + now().toString("EEEE, d. MMMM GG yyyy, hh:mm a.");
+      </E>
+      <F>
+        create "This is an example of compose mode.";
+      </F>
+      <I xd:script="*; create from('//i');">
+        create from("@x");
+        <br/>
+      </I>
+    </D>
+  </A>
+</xd:def>

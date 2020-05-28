@@ -16,29 +16,38 @@ import org.xdef.sys.Report;
 import org.xdef.sys.ReportReader;
 import org.xdef.sys.ReportWriter;
 
-public class ReportReaderWrapper{
+public class ReportReaderWrapper extends RemoteHandlingObject {
 
     private final static int FUNCTION_READER_REPORT = 1;
     private final static int FUNCTION_READER_CLOSE = 2;
     private final static int FUNCTION_READER_PRINT_REPORTS = 3;
     private final static int FUNCTION_READER_PRINT_TO_STRING = 4;
-    private final static int FUNCTION_READER_WRITE_REPORTS= 5;
-    
+    private final static int FUNCTION_READER_WRITE_REPORTS = 5;
+
     private final ReportReader reportReader;
+    private final boolean suppressDeleteObject;
     private Client client;
 
-    public ReportReaderWrapper(Client client, ReportReader reader) {
-        this.client = client;
+    public ReportReaderWrapper(Client client, ReportReader reader, boolean suppressDeleteObject) {
+        super(client);
         this.reportReader = reader;
+        this.suppressDeleteObject = suppressDeleteObject;
     }
 
-    
+    public ReportReaderWrapper(Client client, ReportReader reader) {
+        this(client, reader, false);
+    }
+
+    @Override
+    protected void deleteRemoteObject() {
+        if (!suppressDeleteObject)
+            super.deleteRemoteObject();
+    }
+
     public Response handleRequest(Request request) {
-        try
-        {
+        try {
             BinaryDataReader reader = request.getReader();
-            switch (request.getFunction())
-            {
+            switch (request.getFunction()) {
                 case FUNCTION_READER_REPORT:
                     return getReport(reader);
                 case FUNCTION_READER_CLOSE:
@@ -50,18 +59,21 @@ public class ReportReaderWrapper{
                 case FUNCTION_READER_WRITE_REPORTS:
                     return writeReports(reader);
                 default:
-                    return new ResponseException(ResponseException.ERROR_CODE_UNKNOWN_FUNCTION, "ReportWriter unknown funciton.");
+                    return new ResponseException(ResponseException.ERROR_CODE_UNKNOWN_FUNCTION,
+                            "ReportWriter unknown funciton.");
             }
-        } catch (Exception ex)
-        {
+        } catch (Exception ex) {
             return new ResponseException(ResponseException.ERROR_CODE_INVALID_REQUEST, ex.getMessage());
         }
     }
 
     private Response getReport(BinaryDataReader reader) {
         Report report = reportReader.getReport();
-        ReportWrapper reportWrapper = new ReportWrapper(client, report);
-        int id = client.registerRemoteObject(reportWrapper);
+        int id = 0;
+        if (report != null) {
+            ReportWrapper reportWrapper = new ReportWrapper(client, report);
+            id = client.registerRemoteObject(reportWrapper);
+        }
         return new Response(new BinaryDataBuilder().add(id).build());
     }
 
@@ -74,16 +86,13 @@ public class ReportReaderWrapper{
         int streamId = reader.readInt();
         RemoteOutputStream outputStream = new RemoteOutputStream(new RemoteStreamWrapper(client, streamId));
         String lang = reader.readSharpString();
-        if (lang == null)
-        {
+        if (lang == null) {
             reportReader.printReports(new PrintStream(outputStream));
-        }
-        else
-        {
+        } else {
             reportReader.printReports(new PrintStream(outputStream), lang);
         }
         outputStream.flush();
-        return new EmptyResponse();           
+        return new EmptyResponse();
     }
 
     private Response printToString(BinaryDataReader reader) throws IOException {
@@ -102,6 +111,5 @@ public class ReportReaderWrapper{
         reportReader.writeReports(reportWriter);
         return new EmptyResponse();
     }
-
 
 }

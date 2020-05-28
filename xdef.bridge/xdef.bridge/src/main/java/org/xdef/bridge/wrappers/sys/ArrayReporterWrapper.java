@@ -7,13 +7,16 @@ public class ArrayReporterWrapper extends ReporterWrapper {
 
     private ArrayReporter arrayReporter;
 
-    public ArrayReporterWrapper(Client client) {
+    public ArrayReporterWrapper(Client client, ArrayReporter arrayReporter) {
         super(client);
-        arrayReporter = new ArrayReporter();
         reportReader = arrayReporter;
         reportWriter = arrayReporter;
-        reportReaderWrapper = new ReportReaderWrapper(client, reportReader);
-        reportWriterWrapper = new ReportWriterWrapper(client, reportWriter);
+        reportReaderWrapper = new ReportReaderWrapper(client, reportReader, true);
+        reportWriterWrapper = new ReportWriterWrapper(client, reportWriter, true);
+    }
+
+    public ArrayReporterWrapper(Client client) {
+        this(client, new ArrayReporter());
     }
 
     public ArrayReporter getArrayReporter() {

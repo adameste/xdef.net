@@ -20,6 +20,7 @@ namespace xdef.net.Utils
         public static Properties Deserialize(BigEndianBinaryReader reader)
         {
             var cnt = reader.ReadInt32();
+            if (cnt == 0) return null;
             var res = new Properties();
             for(int i = 0; i < cnt; i++)
             {

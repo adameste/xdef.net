@@ -76,74 +76,74 @@ namespace xdef.net
     /// </tt></pre>
     /// </remarks>
     /// <author>Štěpán Adámek</author>
-    public sealed class XDDocument : RemoteObject
+    public sealed class XDDocument : XXNode
     {
-        private const int FUNCTION_SETPROPERTIES = 1;
-        private const int FUNCTION_SETPROPERTY = 2;
-        private const int FUNCTION_GETPROPERTIES = 3;
-        private const int FUNCTION_ISCREATEMODE = 4;
-        private const int FUNCTION_GETDOCUMENT = 5;
-        private const int FUNCTION_SETROOTMODEL = 6;
-        private const int FUNCTION_XPARSE_1 = 7;
-        private const int FUNCTION_XPARSE_2 = 8;
-        private const int FUNCTION_XPARSE_3 = 9;
-        private const int FUNCTION_XPARSE_4 = 10;
-        private const int FUNCTION_XPARSE_5 = 11;
-        private const int FUNCTION_XPARSE_6 = 12;
-        private const int FUNCTION_XPARSE_7 = 13;
-        private const int FUNCTION_XCREATE_1 = 14;
-        private const int FUNCTION_XCREATE_2 = 15;
-        private const int FUNCTION_XCREATE_3 = 16;
-        private const int FUNCTION_PARSEXCOMPONENT_1 = 17;
-        private const int FUNCTION_PARSEXCOMPONENT_2 = 18;
-        private const int FUNCTION_PARSEXCOMPONENT_3 = 19;
-        private const int FUNCTION_PARSEXCOMPONENT_4 = 20;
-        private const int FUNCTION_PARSEXCOMPONENT_5 = 21;
-        private const int FUNCTION_PARSEXCOMPONENT_6 = 22;
-        private const int FUNCTION_JPARSE_1 = 23;
-        private const int FUNCTION_JPARSE_2 = 24;
-        private const int FUNCTION_JPARSE_3 = 25;
-        private const int FUNCTION_JPARSE_4 = 26;
-        private const int FUNCTION_JPARSE_5 = 27;
-        private const int FUNCTION_JPARSE_6 = 28;
-        private const int FUNCTION_JPARSEXCOMPONENT_1 = 29;
-        private const int FUNCTION_JPARSEXCOMPONENT_2 = 30;
-        private const int FUNCTION_JPARSEXCOMPONENT_3 = 31;
-        private const int FUNCTION_JPARSEXCOMPONENT_4 = 32;
-        private const int FUNCTION_JPARSEXCOMPONENT_5 = 33;
-        private const int FUNCTION_JPARSEXCOMPONENT_6 = 34;
-        private const int FUNCTION_GETSTDOUT = 35;
-        private const int FUNCTION_GETSTDERR = 36;
-        private const int FUNCTION_GETSTDIN = 37;
-        private const int FUNCTION_SETSTREAMWRITER_1 = 38;
-        private const int FUNCTION_SETSTREAMWRITER_2 = 39;
-        private const int FUNCTION_SETSTREAMWRITER_3 = 40;
-        private const int FUNCTION_SETSTDOUT_1 = 41;
-        private const int FUNCTION_SETSTDOUT_2 = 42;
-        private const int FUNCTION_SETSTDIN_1 = 43;
-        private const int FUNCTION_SETSTDOUT_3 = 44;
-        private const int FUNCTION_SETSTDIN_2 = 45;
-        private const int FUNCTION_SETDEBUGGER = 46;
-        private const int FUNCTION_GETDEBUGGER = 47;
-        private const int FUNCTION_SETDEBUG = 48;
-        private const int FUNCTION_ISDEBUG = 49;
-        private const int FUNCTION_PREPAREROOTXXELEMENTNS = 50;
-        private const int FUNCTION_PREPAREROOTXXELEMENT = 51;
-        private const int FUNCTION_GETIMPLPROPERTIES = 52;
-        private const int FUNCTION_GETIMPLPROPERTY = 53;
-        private const int FUNCTION_ISLEGALDATE = 54;
-        private const int FUNCTION_GETMINYEAR = 55;
-        private const int FUNCTION_SETMINYEAR = 56;
-        private const int FUNCTION_GETMAXYEAR = 57;
-        private const int FUNCTION_SETMAXYEAR = 58;
-        private const int FUNCTION_GETSPECIALDATES = 59;
-        private const int FUNCTION_SETSPECIALDATES = 60;
-        private const int FUNCTION_CHECKDATELEGAL = 61;
-        private const int FUNCTION_PRINTREPORTS = 62;
-        private const int FUNCTION_GETLEXICONLANGUAGE = 63;
-        private const int FUNCTION_SETLEXICONLANGUAGE = 64;
-        private const int FUNCTION_XTRANSLATE_1 = 65;
-        private const int FUNCTION_XTRANSLATE_2 = 66;
+        private const int FUNCTION_SETPROPERTIES = 1001;
+        private const int FUNCTION_SETPROPERTY = 1002;
+        private const int FUNCTION_GETPROPERTIES = 1003;
+        private const int FUNCTION_ISCREATEMODE = 1004;
+        private const int FUNCTION_GETDOCUMENT = 1005;
+        private const int FUNCTION_SETROOTMODEL = 1006;
+        private const int FUNCTION_XPARSE_1 = 1007;
+        private const int FUNCTION_XPARSE_2 = 1008;
+        private const int FUNCTION_XPARSE_3 = 1009;
+        private const int FUNCTION_XPARSE_4 = 1010;
+        private const int FUNCTION_XPARSE_5 = 1011;
+        private const int FUNCTION_XPARSE_6 = 1012;
+        private const int FUNCTION_XPARSE_7 = 1013;
+        private const int FUNCTION_XCREATE_1 = 1014;
+        private const int FUNCTION_XCREATE_2 = 1015;
+        private const int FUNCTION_XCREATE_3 = 1016;
+        private const int FUNCTION_PARSEXCOMPONENT_1 = 1017;
+        private const int FUNCTION_PARSEXCOMPONENT_2 = 1018;
+        private const int FUNCTION_PARSEXCOMPONENT_3 = 1019;
+        private const int FUNCTION_PARSEXCOMPONENT_4 = 1020;
+        private const int FUNCTION_PARSEXCOMPONENT_5 = 1021;
+        private const int FUNCTION_PARSEXCOMPONENT_6 = 1022;
+        private const int FUNCTION_JPARSE_1 = 1023;
+        private const int FUNCTION_JPARSE_2 = 1024;
+        private const int FUNCTION_JPARSE_3 = 1025;
+        private const int FUNCTION_JPARSE_4 = 1026;
+        private const int FUNCTION_JPARSE_5 = 1027;
+        private const int FUNCTION_JPARSE_6 = 1028;
+        private const int FUNCTION_JPARSEXCOMPONENT_1 = 1029;
+        private const int FUNCTION_JPARSEXCOMPONENT_2 = 1030;
+        private const int FUNCTION_JPARSEXCOMPONENT_3 = 1031;
+        private const int FUNCTION_JPARSEXCOMPONENT_4 = 1032;
+        private const int FUNCTION_JPARSEXCOMPONENT_5 = 1033;
+        private const int FUNCTION_JPARSEXCOMPONENT_6 = 1034;
+        private const int FUNCTION_GETSTDOUT = 1035;
+        private const int FUNCTION_GETSTDERR = 1036;
+        private const int FUNCTION_GETSTDIN = 1037;
+        private const int FUNCTION_SETSTREAMWRITER_1 = 1038;
+        private const int FUNCTION_SETSTREAMWRITER_2 = 1039;
+        private const int FUNCTION_SETSTREAMWRITER_3 = 1040;
+        private const int FUNCTION_SETSTDOUT_1 = 1041;
+        private const int FUNCTION_SETSTDOUT_2 = 1042;
+        private const int FUNCTION_SETSTDIN_1 = 1043;
+        private const int FUNCTION_SETSTDOUT_3 = 1044;
+        private const int FUNCTION_SETSTDIN_2 = 1045;
+        private const int FUNCTION_SETDEBUGGER = 1046;
+        private const int FUNCTION_GETDEBUGGER = 1047;
+        private const int FUNCTION_SETDEBUG = 1048;
+        private const int FUNCTION_ISDEBUG = 1049;
+        private const int FUNCTION_PREPAREROOTXXELEMENTNS = 1050;
+        private const int FUNCTION_PREPAREROOTXXELEMENT = 1051;
+        private const int FUNCTION_GETIMPLPROPERTIES = 1052;
+        private const int FUNCTION_GETIMPLPROPERTY = 1053;
+        private const int FUNCTION_ISLEGALDATE = 1054;
+        private const int FUNCTION_GETMINYEAR = 1055;
+        private const int FUNCTION_SETMINYEAR = 1056;
+        private const int FUNCTION_GETMAXYEAR = 1057;
+        private const int FUNCTION_SETMAXYEAR = 1058;
+        private const int FUNCTION_GETSPECIALDATES = 1059;
+        private const int FUNCTION_SETSPECIALDATES = 1060;
+        private const int FUNCTION_CHECKDATELEGAL = 1061;
+        private const int FUNCTION_PRINTREPORTS = 1062;
+        private const int FUNCTION_GETLEXICONLANGUAGE = 1063;
+        private const int FUNCTION_SETLEXICONLANGUAGE = 1064;
+        private const int FUNCTION_XTRANSLATE_1 = 1065;
+        private const int FUNCTION_XTRANSLATE_2 = 1066;
 
 
        
@@ -371,7 +371,7 @@ namespace xdef.net
             {
                 // Serialize args here
                 builder.Add(xmlData);
-                builder.Add(reporter.ObjectId);
+                builder.Add(reporter?.ObjectId ?? 0);
                 var res = SendRequestWithResponse(new Request(FUNCTION_XPARSE_4, builder.Build(), ObjectId));
                 using (var reader = res.Reader)
                 {
@@ -491,7 +491,8 @@ namespace xdef.net
                 var res = SendRequestWithResponse(new Request(FUNCTION_XCREATE_1, builder.Build(), ObjectId));
                 using (var reader = res.Reader)
                 {
-                    return XElement.Parse(reader.ReadString());
+                    var str = reader.ReadString();
+                    return XElement.Parse(str);
                 }
             }
         }

@@ -39,6 +39,7 @@ namespace xdef.net.Sys
                 using (var reader = response.Reader)
                 {
                     var objId = reader.ReadInt32();
+                    if (objId == 0) return null;
                     return new Report(objId, _client);
                 }
             }

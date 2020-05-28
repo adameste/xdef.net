@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 using xdef.net.Utils;
@@ -45,7 +46,7 @@ namespace xdef.net.Connection.Library
                 var buf = reader.ReadBytes(len);
                 _stream.Write(buf, 0, len);
             }
-            return null;
+            return new EmptyResponse();
         }
 
         private Request Read(Request request)
@@ -67,7 +68,7 @@ namespace xdef.net.Connection.Library
         private Request Close()
         {
             _stream.Close();
-            return null;
+            return new EmptyResponse();
         }
 
         private Request Available()
