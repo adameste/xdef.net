@@ -213,7 +213,7 @@ namespace xdef.net
 		/// <param name="props">Properties or <tt>null</tt>.</param>
 		/// <param name="parameters">list of files with X-definition sources.</param>
 		/// <returns>generated XDPool.</returns>
-		/// <exception cref="org.xdef.sys.SRuntimeException">if an error occurs.</exception>
+		/// <exception cref="RemoteCallException">if an error occurs.</exception>
         public XDPool CompileXD(Utils.Properties props, params FilePath[] parameters)
         {
             using (var builder = new BigEndianDataBuilder())
@@ -367,7 +367,7 @@ namespace xdef.net
 		/// <param name="source">URL, pathname direct to XML or direct XML.</param>
 		/// <param name="reporter">used for error messages or <tt>null</tt>.</param>
 		/// <returns>created XDDocument object.</returns>
-		/// <exception cref="org.xdef.sys.SRuntimeException">if an error occurs.</exception>
+		/// <exception cref="RemoteCallException">if an error occurs.</exception>
         public XDDocument Xparse(string source, ReportWriter reporter)
         {
             using (var builder = new BigEndianDataBuilder())

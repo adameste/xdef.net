@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices.ComTypes;
 using System.Text;
 using System.Xml;
@@ -50,6 +51,30 @@ namespace xdef.net.Utils
             _writer.Write(x);
             return this;
         }
+        public BigEndianDataBuilder Add(IEnumerable<string> x)
+        {
+            _writer.Write(x.Count());
+            foreach (var it in x)
+                _writer.Write(it);
+            return this;
+        }
+
+        public BigEndianDataBuilder Add(IEnumerable<Uri> x)
+        {
+            _writer.Write(x.Count());
+            foreach (var it in x)
+                _writer.Write(it.AbsoluteUri);
+            return this;
+        }
+
+        public BigEndianDataBuilder Add(IEnumerable<FilePath> x)
+        {
+            _writer.Write(x.Count());
+            foreach (var it in x)
+                _writer.Write(it.JavaPath);
+            return this;
+        }
+
         public BigEndianDataBuilder Add(IBinarySerializable x)
         {
             _writer.Write(x);

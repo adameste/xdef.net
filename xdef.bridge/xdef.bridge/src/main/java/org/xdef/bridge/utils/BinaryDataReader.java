@@ -1,7 +1,9 @@
 package org.xdef.bridge.utils;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 
@@ -25,6 +27,34 @@ public class BinaryDataReader extends CustomDataInputStream {
             return null;
         byte[] data = readNBytes(payload);
         return new String(data, StandardCharsets.UTF_8);
+    }
+
+    public String[] readSharpStringArray() throws IOException {
+        int cnt = readInt();
+        String[] arr = new String[cnt];
+        for(int i = 0; i < cnt; i++) {
+            arr[i] = readSharpString();
+        }
+        return arr;
+
+    }
+
+    public URL[] readUrlArray() throws IOException {
+        int cnt = readInt();
+        URL[] arr = new URL[cnt];
+        for(int i = 0; i < cnt; i++) {
+            arr[i] = new URL(readSharpString());
+        }
+        return arr;
+    }
+
+    public File[] readFileArray() throws IOException {
+        int cnt = readInt();
+        File[] arr = new File[cnt];
+        for(int i = 0; i < cnt; i++) {
+            arr[i] = new File(readSharpString());
+        }
+        return arr;
     }
 
     public Element readElement() throws IOException {
