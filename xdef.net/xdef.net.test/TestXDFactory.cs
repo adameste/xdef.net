@@ -4,8 +4,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection.PortableExecutable;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Schema;
 using xdef.net.Sys;
 using xdef.net.Utils;
 
@@ -29,8 +31,19 @@ namespace xdef.net.test
             _mockServer.Dispose();
         }
 
+        public void x()
+        {
+            var pool = XD.Factory.CompileXD(null, new FilePath("x-definition file path"));
+            var doc = pool.CreateXDDocument();
+            var arrayReporter = new ArrayReporter();
+            doc.Xparse(new FilePath("xml file path"), arrayReporter);
+            if (arrayReporter.Errors)
+            {
+                // Chyba
+            }
+        }
         [TestMethod]
-        public async Task TestCompile()
+        public void TestCompile()
         {
             List<XDPool> pools = new List<XDPool>();
             pools.Add(XD.Factory.CompileXD(null, new FilePath("xdefs/02.xdef")));
