@@ -77,10 +77,21 @@ namespace xdef.net
                     catch (Exception) { } // DO nothing, process exited
                 }
             });
-
+            AppDomain.CurrentDomain.ProcessExit += CurrentDomain_ProcessExit;
             Debug.WriteLine($"Java process started: {line}");
         }
 
+        private void CurrentDomain_ProcessExit(object sender, EventArgs e)
+        {
+            if (StartProcess)
+            {
+                try
+                {
+                    _xdefJavaProcess.Kill();
+                }
+                catch (Exception) { } // Do nothing
+            }
+        }
 
         ~XD()
         {
